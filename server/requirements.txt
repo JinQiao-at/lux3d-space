@@ -1,0 +1,13 @@
+# 运行期依赖（mock 模式最小集合）
+# 说明：uvicorn[standard] 会额外拉 httptools/watchfiles 等二进制依赖，在慢网络下容易卡住；
+# 本项目开发/演示用纯 uvicorn 即可。生产如需高性能可自行改为 uvicorn[standard]。
+uvicorn>=0.30
+fastapi>=0.115,<1
+pydantic>=2.7
+pydantic-settings>=2.3
+httpx>=0.27
+python-dotenv>=1.0
+
+# pg 模式（PostgreSQL + pgvector）才需要；mock 模式不导入这两个包
+psycopg[binary,pool]>=3.2
+pgvector>=0.3

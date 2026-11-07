@@ -1,0 +1,2 @@
+# 该目录存放 Aholo Lux3D 生成的 GLB 资产（由 pipeline/lux3d 生成）。
+# 为空时 Demo 自动回退程序化几何，完全可运行。

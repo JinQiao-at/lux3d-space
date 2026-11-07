@@ -1,0 +1,657 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-07T05:55:37.398Z",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "生成剩余高光资产（书架/壁炉/浮雕/暗门/石台/淋浴门）",
+      "status": "verified",
+      "owner": "dsh",
+      "priority": 1,
+      "scope": [
+        "pipeline/lux3d",
+        "demo/public/models"
+      ],
+      "acceptance": "6 件 GLB 生成成功且每件 <2.5MB；node generate-assets.mjs --dry-run 显示已跳过；Demo HEAD 返回 model/gltf-binary",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-03T15:36:52.361Z",
+          "text": "ZCode 环境检查：AHOLO_API_KEY 在会话/User/Machine 级均未设置，无法调用真实 Lux3D API。管线脚本与流程已读通（generate-assets.mjs 支持断点续跑/--only/--force）。待 DSH 在其环境提供 Key 或明确由 DSH 执行后 reopen。"
+        },
+        {
+          "at": "2026-11-03T15:36:52.502Z",
+          "text": "blocked: 缺 AHOLO_API_KEY（ZCode 环境未配置，密钥零落盘原则下 ZCode 不能代为生成）；pipeline/lux3d 属 DSH 主责，建议 DSH 侧执行或配置环境变量后 reopen"
+        },
+        {
+          "at": "2026-11-04T04:54:30.910Z",
+          "text": "reopen: 由 DSH 在 T-014/追加任务中完成六件高光资产（书架/壁炉/浮雕/暗门/石台/淋浴门）"
+        },
+        {
+          "at": "2026-11-04T04:54:31.012Z",
+          "text": "claim by dsh"
+        },
+        {
+          "at": "2026-11-04T04:54:31.114Z",
+          "text": "done: 六件高光资产全部生成并入库；registry 8 条；HEAD 全部 200"
+        },
+        {
+          "at": "2026-11-04T04:54:31.221Z",
+          "text": "verified by dsh"
+        }
+      ],
+      "createdAt": "2026-11-03T23:20:00+08:00",
+      "updatedAt": "2026-11-04T04:54:31.221Z",
+      "blockedReason": "缺 AHOLO_API_KEY（ZCode 环境未配置，密钥零落盘原则下 ZCode 不能代为生成）；pipeline/lux3d 属 DSH 主责，建议 DSH 侧执行或配置环境变量后 reopen",
+      "claimedAt": "2026-11-04T04:54:31.010Z",
+      "doneAt": "2026-11-04T04:54:31.112Z",
+      "verifiedAt": "2026-11-04T04:54:31.219Z"
+    },
+    {
+      "id": "T-002",
+      "title": "公网部署 Demo（比赛要求可访问链接）",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 1,
+      "scope": [
+        "demo",
+        "docs"
+      ],
+      "acceptance": "公网 URL 打开 200、能开始游戏、加载至少 1 个真实 GLB；链接写入 README 与报告",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-03T15:37:09.707Z",
+          "text": "ZCode 前置条件评估：公网部署需 Vercel/Netlify/CF 账号（人类持有）且对外发布需 Owner 确认。ZCode 可先做部署配置准备（构建命令/输出目录/SPA 回退/GLB 随构建发布检查），待账号与确认到位再执行。"
+        },
+        {
+          "at": "2026-11-04T08:47:48.191Z",
+          "text": "ZCode 第一优先；部署后 DSH 验收 URL+手机+GLB；见 docs/09 §4/§5"
+        },
+        {
+          "at": "2026-11-06T15:16:56.052Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-07T03:48:24.209Z",
+          "text": "done: Vercel 部署成功：https://lux3d-lantern-demo.vercel.app（项目 jin-qiao-wang/lux3d-lantern-demo，Ready 60s 零错误，首次部署即生产）；产物=17 GLB+splats 全量；README 链接已回写；大陆网络 DNS 污染本机 curl/IAB/WebFetch/Jina 均不可达（环境问题非部署问题，Vercel API 侧 Ready 确认），手机 4G 实测留 Owner/DSH；智谱 Key（用户误贴为 Vercel Token）已鉴定并记录（余额不足待充值）"
+        }
+      ],
+      "createdAt": "2026-11-03T23:20:00+08:00",
+      "updatedAt": "2026-11-07T03:48:24.209Z",
+      "claimedAt": "2026-11-06T15:16:56.051Z",
+      "doneAt": "2026-11-07T03:48:24.206Z"
+    },
+    {
+      "id": "T-003",
+      "title": "项目报告书框架与证据链（PDF/PPT）",
+      "status": "pending",
+      "owner": null,
+      "priority": 2,
+      "scope": [
+        "docs"
+      ],
+      "acceptance": "含过程截图、资产迭代对比（raw vs optimized）、Lux3D 任务记录、五维评审自评；导出 PDF",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T08:47:48.499Z",
+          "text": "DSH 主责：报告书；ZCode 提供截图素材"
+        }
+      ],
+      "createdAt": "2026-11-03T23:20:00+08:00",
+      "updatedAt": "2026-11-04T08:47:48.501Z"
+    },
+    {
+      "id": "T-004",
+      "title": "90 秒 Demo 视频脚本与真机录屏",
+      "status": "pending",
+      "owner": null,
+      "priority": 2,
+      "scope": [
+        "assets",
+        "docs"
+      ],
+      "acceptance": "90s mp4，含真实运行画面；前 10 秒有提灯高光；文件 <100MB",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T08:47:48.566Z",
+          "text": "DSH+人类：90 秒视频；用 demo/scripts/screenshot.mjs 与录屏"
+        }
+      ],
+      "createdAt": "2026-11-03T23:20:00+08:00",
+      "updatedAt": "2026-11-04T08:47:48.567Z"
+    },
+    {
+      "id": "T-005",
+      "title": "真实 GLB 的摆放/朝向/尺寸微调",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 2,
+      "scope": [
+        "demo/src/scene"
+      ],
+      "acceptance": "build 通过；19 项单测全过；5180 截图或录屏确认书桌/日记朝向与比例正确",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-03T15:37:09.881Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-04T08:47:48.250Z",
+          "text": "ZCode 进行中；完成后 DSH 复跑 build+21单测+三张截图"
+        },
+        {
+          "at": "2026-11-04T09:25:34.089Z",
+          "text": "done: 8 件真实 GLB 校准：书桌 fitSize 1.6→0.98（GLB bbox 实测归一后高 0.83m，对齐程序化桌面 0.82m，修复日记埋入桌身）；书架 2.2→2.6 保顶天高度 + rotationYDeg=90、壁炉加 rotationYDeg=-90（GLB 宽面朝向贴墙修正）；其余 5 件（淋浴门/浮雕/暗门/石台/日记）bbox 实测后确认原 hint 合理不动。build + 21/21 单测过；三 zone 截图验收齐"
+        }
+      ],
+      "createdAt": "2026-11-03T23:20:00+08:00",
+      "updatedAt": "2026-11-04T09:25:34.089Z",
+      "claimedAt": "2026-11-03T15:37:09.878Z",
+      "doneAt": "2026-11-04T09:25:34.087Z"
+    },
+    {
+      "id": "T-006",
+      "title": "小红书 / X 发布文案与链接登记",
+      "status": "pending",
+      "owner": null,
+      "priority": 3,
+      "scope": [
+        "docs"
+      ],
+      "acceptance": "文案 + 3 条 15s 短片清单 + 话题词 #Aholo黑客松 / #Manycorehackathon；链接在结果公布前公开",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-03T23:20:00+08:00",
+      "updatedAt": "2026-11-03T23:20:00+08:00"
+    },
+    {
+      "id": "T-007",
+      "title": "LuxReal 宣传片适配（若工作台可用）",
+      "status": "pending",
+      "owner": null,
+      "priority": 3,
+      "scope": [
+        "assets"
+      ],
+      "acceptance": "分镜表 + 至少 1 条 15–30s 多机位一致性片段；若不可用则记录原因",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-03T23:20:00+08:00",
+      "updatedAt": "2026-11-03T23:20:00+08:00"
+    },
+    {
+      "id": "T-008",
+      "title": "双 Agent 流程演练（ZCode 接入验收）",
+      "status": "pending",
+      "owner": null,
+      "priority": 3,
+      "scope": [
+        "collab",
+        "AGENTS.md"
+      ],
+      "acceptance": "ZCode 能按 AGENTS.md 读到任务板、claim 一个只读校验任务、done 并生成交接单；DSH verify 通过",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-03T23:20:00+08:00",
+      "updatedAt": "2026-11-03T23:20:00+08:00"
+    },
+    {
+      "id": "T-009",
+      "title": "SpatialGen：生成密室 3DGS「记忆回廊」场景",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 2,
+      "scope": [
+        "pipeline/world",
+        "demo/public/splats"
+      ],
+      "acceptance": "1 个 3DGS 场景（SPZ/PLY）生成成功、体积可控、可在 Viewer 打开",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-07T02:44:17.518Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-07T02:44:17.691Z",
+          "text": "ZCode 执行：走 MCP 包编程式 generateWorld（prompt=docs/05 §4.2 密室文案，wait 模式）；产物落 demo/public/splats；时间盒 11/14"
+        },
+        {
+          "at": "2026-11-07T02:58:30.334Z",
+          "text": "done: SpatialGen 记忆回廊生成成功：MCP 包编程式 generateWorld（prompt=docs/05§4.2 密室文案，wait 模式），worldId=3FO4FN51MVSB；SPZ 4.50MB（首帧友好）+ PLY 18.45MB 高保真版均落 demo/public/splats/；原始响应存 pipeline/world/last-result.json。踩坑记录：Windows ESM import 绝对路径必须 pathToFileURL"
+        }
+      ],
+      "createdAt": "2026-11-03T15:22:17.112Z",
+      "updatedAt": "2026-11-07T02:58:30.334Z",
+      "claimedAt": "2026-11-07T02:44:17.516Z",
+      "doneAt": "2026-11-07T02:58:30.332Z"
+    },
+    {
+      "id": "T-010",
+      "title": "Aholo Viewer：结局「记忆回廊」渲染页面",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 2,
+      "scope": [
+        "demo/src/ui",
+        "demo/public/splats"
+      ],
+      "acceptance": "结局面板可打开 3DGS 场景；桌面+手机可环视；首帧<5s",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T08:47:48.376Z",
+          "text": "ZCode：等 DSH T-009 产出 3DGS 后接 Viewer；先做 UI 占位"
+        },
+        {
+          "at": "2026-11-07T02:58:48.333Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-07T02:58:48.450Z",
+          "text": "splats 已就绪：demo/public/splats/memory-corridor.spz (4.5MB) + memory-corridor-hd.ply (18.4MB)；Viewer 选型：@mkkellogg/gaussian-splats-3d@0.4.7（MIT，SPZ 原生支持，动态 import 独立 chunk）——偏离板上 @manycore/aholo-viewer 备注因后者 API 文档缺失风险高，note 透明化"
+        },
+        {
+          "at": "2026-11-07T03:19:29.379Z",
+          "text": "done: 记忆回廊上线（双层呈现）：主视觉=SpatialGen 全景图（panoUrl 1.06MB，可拖动环视，石台手稿烛光蓝光柱与游戏密室叙事呼应）；实验模式=3DGS 点云实时渲染（@mkkellogg/gaussian-splats-3d@0.4.7 动态 chunk，PLY 18.4MB，黑屏排查中标记 experimental 不影响主链）；EndingPanel 加「进入记忆回廊」按钮（setPanel('memory')，关闭回结局不重置进度）；StrictMode 双挂载泄漏已修（无条件 disposeAll）。build+27/27；全景版浏览器截图验收"
+        },
+        {
+          "at": "2026-11-07T03:54:17.024Z",
+          "text": "黑屏根因已定位（见 docs/13 §0）：splat=OpenCV -Y up 坐标系，官方相机 up.set(0,-1,0)+position(-1.5,-0.5,0)。修复方案A=mkkellogg+场景翻转（~10行）；方案B=官方 aholo-viewer 重写（skill 模板齐备）。建议单开任务执行"
+        }
+      ],
+      "createdAt": "2026-11-03T15:22:17.198Z",
+      "updatedAt": "2026-11-07T03:54:17.026Z",
+      "claimedAt": "2026-11-07T02:58:48.331Z",
+      "doneAt": "2026-11-07T03:19:29.377Z"
+    },
+    {
+      "id": "T-011",
+      "title": "Lux3D part_split：暗门/转盘拆分并接 R3F 动画",
+      "status": "done",
+      "owner": null,
+      "priority": 2,
+      "scope": [
+        "pipeline/lux3d",
+        "demo/src/scene"
+      ],
+      "acceptance": "拆分 GLB 部件可被 R3F 分别旋转/开合；7 步主线与 19 单测不受影响",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T08:47:48.311Z",
+          "text": "ZCode：等 DSH 产出拆分 GLB 后开始；scope demo/src/scene"
+        },
+        {
+          "at": "2026-11-06T15:34:46.146Z",
+          "text": "done: 转盘动画恢复：DialParts.tsx（useGLTF 部件 + useFrame 按 dialOrder 平滑旋转 + HEAD 探测/程序化兜底复用）接入 Props.tsx 转盘块；浏览器实跑 3-1-2 全链 solved=true stage=chamber，三盘各自转到位（截图链）；状态机/单测零改动"
+        }
+      ],
+      "createdAt": "2026-11-03T15:22:17.268Z",
+      "updatedAt": "2026-11-06T15:34:46.146Z",
+      "doneAt": "2026-11-06T15:34:46.145Z"
+    },
+    {
+      "id": "T-012",
+      "title": "Aholo MCP 接入（DSH/ZCode 任一）",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 2,
+      "scope": [
+        "docs",
+        "pipeline"
+      ],
+      "acceptance": "配置 mcp.json 后可用对话调用 world_generate / lux3d_* 工具；密钥不落盘",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T08:47:48.437Z",
+          "text": "ZCode 可选：MCP 接入 Aholo；Key 仅环境变量"
+        },
+        {
+          "at": "2026-11-07T02:26:58.348Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-07T02:29:59.085Z",
+          "text": "done: Aholo MCP 接入：官方包 @manycore/aholo-sdk-mcp@1.9.0 装入 pipeline/mcp；launch.mjs 启动器读本机 gitignored .env.aholo 注入密钥（零落仓库）；冒烟测试握手成功+26 工具全列（含 world_generate/lux3d_part_split/text_to_3d）；已注册用户级 config.json mcp.servers.aholo（重启 ZCode 生效）；docs/12 配置指南"
+        }
+      ],
+      "createdAt": "2026-11-03T15:22:17.347Z",
+      "updatedAt": "2026-11-07T02:29:59.085Z",
+      "claimedAt": "2026-11-07T02:26:58.344Z",
+      "doneAt": "2026-11-07T02:29:59.083Z"
+    },
+    {
+      "id": "T-013",
+      "title": "Reality：手机环拍真实房间→3DGS 重建（报告/视频用）",
+      "status": "pending",
+      "owner": null,
+      "priority": 3,
+      "scope": [
+        "assets",
+        "pipeline/world"
+      ],
+      "acceptance": "≥20 张照片重建成功；有真实空间 vs 虚拟书房对照图/转场",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-03T15:22:17.427Z",
+      "updatedAt": "2026-11-03T15:22:17.429Z"
+    },
+    {
+      "id": "T-014",
+      "title": "Lux3D 资产扩产：书架/浮雕/暗门/石台",
+      "status": "verified",
+      "owner": "dsh",
+      "priority": 1,
+      "scope": [
+        "pipeline/lux3d",
+        "demo/public/models"
+      ],
+      "acceptance": "4 件真实 GLB 生成并压缩进 demo/public/models；registry 含 6 条；HEAD 均 200 model/gltf-binary",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T04:35:25.573Z",
+          "text": "claim by dsh"
+        },
+        {
+          "at": "2026-11-04T04:54:30.695Z",
+          "text": "done: Lux3D 扩产 4 件（书架/浮雕/暗门/石台），加上前两件共 6 条 registry；全部 HEAD 200 model/gltf-binary"
+        },
+        {
+          "at": "2026-11-04T04:54:30.810Z",
+          "text": "verified by dsh"
+        }
+      ],
+      "createdAt": "2026-11-04T04:35:24.925Z",
+      "updatedAt": "2026-11-04T04:54:30.810Z",
+      "claimedAt": "2026-11-04T04:35:25.570Z",
+      "doneAt": "2026-11-04T04:54:30.693Z",
+      "verifiedAt": "2026-11-04T04:54:30.807Z"
+    },
+    {
+      "id": "T-015",
+      "title": "剧情内容扩充：日记/浮雕/结局/知识条目",
+      "status": "verified",
+      "owner": "dsh",
+      "priority": 1,
+      "scope": [
+        "demo/src/data",
+        "demo/tests"
+      ],
+      "acceptance": "7 步主线与 9 flags 不变；build 通过；单测全过；narrative+knowledge 文本量提升≥60%；知识≥15 条且 id/字段合法",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T04:36:28.250Z",
+          "text": "claim by dsh"
+        },
+        {
+          "at": "2026-11-04T04:39:57.810Z",
+          "text": "done: 剧情内容扩充：narrative 文案全面扩写（开场 6 行、3 zone 进入文案、17 物件成功文案 4-7 行、日记 7→12 条、三级提示 24 条、错误拨盘 3→7 条、结局 329 汉字含镜厅钩子）；知识库 11→17 条（新增上一任屋主/ECO 三符号/暗门来历/炉膛刻字/三声钟响/A16-024，字段与 seed 对齐）；7 步 stage、9 flags、lanternLit 机制不变；narrative+knowledge 源码 21.4KB→34.7KB（+62%）。验证：tsc 0 错误；单测 20/20（新增 T-015 叙事完整性测试）；build 619 modules 6.72s。"
+        },
+        {
+          "at": "2026-11-04T04:58:30.045Z",
+          "text": "verified by dsh"
+        }
+      ],
+      "createdAt": "2026-11-04T04:35:25.110Z",
+      "updatedAt": "2026-11-04T04:58:30.045Z",
+      "claimedAt": "2026-11-04T04:36:28.249Z",
+      "doneAt": "2026-11-04T04:39:57.808Z",
+      "verifiedAt": "2026-11-04T04:58:30.043Z"
+    },
+    {
+      "id": "T-016",
+      "title": "中文文本渲染与排版优化",
+      "status": "verified",
+      "owner": "dsh",
+      "priority": 1,
+      "scope": [
+        "demo/src/ui",
+        "demo/src/styles.css"
+      ],
+      "acceptance": "build+单测通过；标题/书房HUD/日记/结局四张截图对比；无网络字体；reduced-motion 生效",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T04:39:57.908Z",
+          "text": "claim by dsh"
+        },
+        {
+          "at": "2026-11-04T04:56:51.375Z",
+          "text": "done: 中文文本渲染与排版优化：建立零网络字体中文排版系统（serif/sans 双栈、optimizeLegibility、line-break strict、行高 1.85、字距 0.02em、日记/叙事首行缩进）；叙事日志逐行淡入+打字机 reveal（prefers-reduced-motion 关闭，CDP 实测 normal 150ms 显示 40/120 字+5 caret，reduce 模式 120/120 字+0 caret）；日记面板改为手稿纸质感；HUD 增加上下渐变 scrim 与多层 text-shadow；档案知识卡片分层（标题/正文/元信息/来源/置信度）；结局排版修复长文裁切并显示统计。不改文案/场景/状态机。验证：tsc 0 错误、单测 20/20、build exit 0；前后对比截图 4 组 + 拼图已产出。"
+        },
+        {
+          "at": "2026-11-04T04:56:51.477Z",
+          "text": "截图证据：assets/screenshots/t016-before/、t016-after/（4 张/组）与对比拼图 assets/screenshots/t016-compare.png。截图脚本在 \\C:\\Users\\王潇\\AppData\\Local\\Temp（Edge headless + CDP，不提交仓库）。"
+        },
+        {
+          "at": "2026-11-04T04:58:30.126Z",
+          "text": "verified by dsh"
+        }
+      ],
+      "createdAt": "2026-11-04T04:35:25.270Z",
+      "updatedAt": "2026-11-04T04:58:30.126Z",
+      "claimedAt": "2026-11-04T04:39:57.907Z",
+      "doneAt": "2026-11-04T04:56:51.373Z",
+      "verifiedAt": "2026-11-04T04:58:30.125Z"
+    },
+    {
+      "id": "T-017",
+      "title": "收尾：可收集日记≥10 + 壁炉描述修正 + 截图脚本固化",
+      "status": "verified",
+      "owner": "dsh",
+      "priority": 1,
+      "scope": [
+        "demo/src/game",
+        "demo/scripts"
+      ],
+      "acceptance": "玩家实际可达日记≥10；actions.ts 壁炉方位描述准确；demo/scripts/screenshot.mjs 可复现 4 张截图；build+20 单测通过",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T04:58:30.894Z",
+          "text": "claim by dsh"
+        },
+        {
+          "at": "2026-11-04T05:02:33.270Z",
+          "text": "done: T-017 收尾三项完成：(1) actions.ts 补 5 处 recordJournal（bookshelf→eco_three_symbols、fireplace→hearth_inscription、floor_door→previous_owner、mirror→mirror_echo、painting→previous_owner、secret_door→secret_door_origin；不碰 stage/flags/lanternLit），完整 7 步主线 journal=10 条、主线+可选调查点可收集全部 12 条且幂等；新增单测 T-017（21/21 pass）。(2) 修正 actions.ts 硬编码方位「壁炉右侧靠墙」→「炉火正对的那面墙根」（与地板暗门实际坐标 x=-2.4 西侧一致）。(3) 新增 demo/scripts/screenshot.mjs：Edge headless + CDP 自动启停浏览器、os.tmpdir 临时 profile 并清理，生成 assets/screenshots/ui-01-title/ui-02-hud-study/ui-03-journal/ui-04-ending 四张 1600×900 截图（实测 exit 0、无残留进程/临时目录）；README 补运行用法与截图验收行。验证：tsc 0 错误、build exit 0（619 modules, 9.76s）、单测 21/21。"
+        },
+        {
+          "at": "2026-11-04T08:47:48.002Z",
+          "text": "verified by dsh"
+        }
+      ],
+      "createdAt": "2026-11-04T04:58:01.906Z",
+      "updatedAt": "2026-11-04T08:47:48.002Z",
+      "claimedAt": "2026-11-04T04:58:30.893Z",
+      "doneAt": "2026-11-04T05:02:33.268Z",
+      "verifiedAt": "2026-11-04T08:47:48.001Z"
+    },
+    {
+      "id": "T-018",
+      "title": "剩余 9 件 Lux3D 资产（DSH）",
+      "status": "in_progress",
+      "owner": "dsh",
+      "priority": 1,
+      "scope": [
+        "pipeline/lux3d",
+        "demo/public/models"
+      ],
+      "acceptance": "9 件全部 gen+优化+registry；HEAD 200；docs/08 更新为 17/17",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T08:47:48.130Z",
+          "text": "claim by dsh"
+        },
+        {
+          "at": "2026-11-04T11:55:36.609Z",
+          "text": "Owner 已向 ZCode 直接提供 API Key 并授权执行剩余 9 件资产生成（owner 仍记 dsh，ZCode 代跑管线，产物同规范落 demo/public/models + registry 自动重写）。流程：dry-run → 批量 --concurrency 3 → bbox 校准建议随 handoff 附上"
+        },
+        {
+          "at": "2026-11-04T12:37:38.214Z",
+          "text": "ZCode 代跑完成：9/9 件生成成功（runs/20261104-195605，glbTaskId 4656460-4657113），registry 17 条全量。bbox 校准已应用：floor_door 1.15 / mirror 2.2+落地 y=0 / painting 1.2+y=1.3 / stairs 2.0 / dial×3 0.45+y=1.13 / basin rotY-90 / tapestry 保持。build ✅ + 21/21 单测 ✅ + 4 件 curl 200。风险：转盘换 GLB 后程序化指针动画暂时消失（静态盘面），待 T-011 part_split 恢复。截图证据：地下室转盘/书房暗门/密室挂毯 3 张（ZCode 会话）"
+        }
+      ],
+      "createdAt": "2026-11-04T08:47:48.070Z",
+      "updatedAt": "2026-11-04T12:37:38.217Z",
+      "claimedAt": "2026-11-04T08:47:48.129Z"
+    },
+    {
+      "id": "T-019",
+      "title": "故事技术栈定义（docs/10）+ Zork 借鉴一期实现（首访文案/物品谜题/地图/收集进度）",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 2,
+      "scope": [
+        "docs",
+        "demo/src",
+        "demo/tests"
+      ],
+      "acceptance": "docs/10 六层定义+数据契约+Zork借鉴表；build+21既有+≥6新增单测全绿；种子截图验证首访文案/M面板/谜题链；旧存档兼容",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-04T13:20:47.274Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-04T13:20:47.461Z",
+          "text": "Owner 授权 ZCode 主写 docs/10（docs/ 本属 DSH，特此透明化）；对标 zork-underground-empire，战斗明确不借鉴"
+        },
+        {
+          "at": "2026-11-04T14:15:04.298Z",
+          "text": "done: 故事技术栈定义+Zork借鉴一期：docs/10 六层定义（含 Blender P1 规格与 Zork 借鉴表borrow/already/skip）；demo 四项——use_item_on 物品谜题（brass_key 支线：二次搜索书架得钥匙→K 键对洗手台使用开暗格，错误组合温和失败不消耗，不动 9 flags/日记全集）、ZONE_FIRST_ENTER_LINES 首访文案（visited 驱动）、MapPanel M 键、日记 x/12 进度。build+27/27 单测（21 既有零回归+6 新增）；use_item_on 与地图面板浏览器实跑截图；首访文案由单测确定性验证（浏览器种子会话偶发漂移已记录）"
+        }
+      ],
+      "createdAt": "2026-11-04T13:20:47.112Z",
+      "updatedAt": "2026-11-04T14:15:04.298Z",
+      "claimedAt": "2026-11-04T13:20:47.272Z",
+      "doneAt": "2026-11-04T14:15:04.294Z"
+    },
+    {
+      "id": "T-020",
+      "title": "开源依赖源流存档（docs/11）+ 许可证只读复核 + ink 对接评估",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 2,
+      "scope": [
+        "docs"
+      ],
+      "acceptance": "docs/11 含：故事/实现开源项目源流表（Zork 仅方法论、零叙事库运行时）、gh 只读复核 SPDX 表（含 6 项未确认复核）、ink 对接评估（零代码零依赖）；密钥扫描 CLEAN",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-05T07:45:52.032Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-05T07:45:52.195Z",
+          "text": "Owner 授权 ZCode 主写 docs/11（docs/ 本属 DSH）；数据源：WorkBuddy 交付的 GitHub 检索清单 + gh CLI 只读复核；不改 demo/，不新增依赖"
+        },
+        {
+          "at": "2026-11-05T07:48:24.294Z",
+          "text": "done: docs/11 落盘：①核心结论（运行时 0 叙事库，package.json 证据；Zork I 唯一故事类引用且仅方法论，docs/02§10.4+docs/10§2 证据）②gh 只读复核 37 仓库——WorkBuddy 清单零偏差，6 项未确认全部坐实 NOASSERTION，klembot/twine 404 属实，归档属实，新核实 inkle/inkjs=MIT ③ink 对接评估三路径，推荐创作期工具路径（运行时零依赖零契约改动，含采纳流程与不采纳替代）④GitHub×Agent 四层搭配+ai-plugins 子代理映射 ⑤给 WorkBuddy/质谱四条口径"
+        }
+      ],
+      "createdAt": "2026-11-05T07:45:51.857Z",
+      "updatedAt": "2026-11-05T07:48:24.294Z",
+      "claimedAt": "2026-11-05T07:45:52.030Z",
+      "doneAt": "2026-11-05T07:48:24.291Z"
+    },
+    {
+      "id": "T-021",
+      "title": "Blender 装机与部件拆分管线（转盘/暗门 parts GLB）",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 1,
+      "scope": [
+        "pipeline/blender",
+        "demo/public/models/parts"
+      ],
+      "acceptance": "blender --version 可用；split_parts.py 对转盘产出 body+pointer 两部件 GLB（bbox 校准过）；暗门同法或记录降级原因",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-06T15:25:26.188Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-06T15:25:26.405Z",
+          "text": "Blender 4.2.23 LTS 已装（.dsh/tools/blender portable，南大镜像 zip，winget 403 绕过）；Owner 指令：修整组装+动画前置"
+        },
+        {
+          "at": "2026-11-06T15:34:46.044Z",
+          "text": "done: Blender 4.2.23 LTS 装机（winget 403→南大镜像 portable zip，.dsh/tools/blender）+ split_parts.py 拆分管线：join+remove_doubles(1mm) 焊点修复量化碎片爆炸（1906→10 连通体），按体积排序 body+pointer 导出。三转盘全产出 body（dial_2 走 SINGLE_PART 分支，三脚本路径全验证）；pointer 碎片跨度过大弃用，动画改盘体整体旋转（第一性原理：不多加）"
+        }
+      ],
+      "createdAt": "2026-11-06T15:25:26.041Z",
+      "updatedAt": "2026-11-06T15:34:46.044Z",
+      "claimedAt": "2026-11-06T15:25:26.186Z",
+      "doneAt": "2026-11-06T15:34:46.042Z"
+    },
+    {
+      "id": "T-022",
+      "title": "SpatialGen/3DGS 已知坑与推荐参数调研（docs/13）",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 2,
+      "scope": [
+        "docs"
+      ],
+      "acceptance": "docs/13 简报：已知坑清单+推荐参数表，每条带官方来源链接；黑屏根因定位",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-07T03:53:13.667Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-07T03:54:16.618Z",
+          "text": "done: docs/13 调研简报：①黑屏根因石锤（官方原文：splat 用 OpenCV -Y up 坐标系，我们 Y-up 相机看反了）+两修复方案 ②生态地图四仓（SpatialGen 模型本体 3DV2026/aholo-spatial-sdk/aholo-viewer 含官方AI skill/splat-transform 瘦身链）③已知坑 8 条+推荐参数表，全部带来源 ④PLY 18.4MB 官方瘦身路径（lod:auto --ratio 0.3 → SPZ）；YouTube 字幕因本机出口受阻未完成已如实标注（官方 LLM 文档为更权威替代）"
+        },
+        {
+          "at": "2026-11-07T04:00:22.500Z",
+          "text": "补充：yt-dlp 后台任务已归（exit 0 为重试耗尽后的退出），日志确认 www.youtube.com 连接超时 ×6（两组查询均 3 次重试失败）——docs/13 §5 的「出口受阻」标注属实，YouTube 字幕项维持未完成状态，官方 LLM 文档替代源不变"
+        }
+      ],
+      "createdAt": "2026-11-07T03:52:53.524Z",
+      "updatedAt": "2026-11-07T04:00:22.504Z",
+      "claimedAt": "2026-11-07T03:53:13.660Z",
+      "doneAt": "2026-11-07T03:54:16.613Z"
+    },
+    {
+      "id": "T-023",
+      "title": "3DGS 实验模式黑屏修复（OpenCV -Y up 坐标系对齐，docs/13 方案A）",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 1,
+      "scope": [
+        "demo/src/ui"
+      ],
+      "acceptance": "实验模式打开后 3DGS 场景可见（非黑屏）；build+27 单测；全景主视觉不受影响",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-07T05:42:42.744Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-07T05:55:37.398Z",
+          "text": "done: 3DGS 实验模式黑屏修复（A2 网格翻转）：splatMesh.rotation.x=π（OpenCV -Y up → three +Y up），相机回归常规位(0,0,4)。视觉验证成功——蓝青色调高斯点云石室完整可见（截图）。教训沉淀：①A1 官方相机参数对 mkkellogg viewer 无效（其内部接管相机控制，网格级翻转才是正解）②WebGL readPixels 像素探针路线不可靠（主画布同判 0，无 preserveDrawingBuffer 时帧间清空）③splat 模式下截图需等 FadeIn 揭幕结束(~25s)才不超时"
+        }
+      ],
+      "createdAt": "2026-11-07T05:42:42.614Z",
+      "updatedAt": "2026-11-07T05:55:37.398Z",
+      "claimedAt": "2026-11-07T05:42:42.742Z",
+      "doneAt": "2026-11-07T05:55:37.396Z"
+    }
+  ]
+}

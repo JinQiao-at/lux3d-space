@@ -1,0 +1,16 @@
+# 依赖与构建产物
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+
+# 本机/临时
+.DS_Store
+Thumbs.db
+*.log
+
+# 本机凭据与重产物（T-002 git 安全门）
+server/.env*
+demo/.env.local
+pipeline/lux3d/runs/*/raw/

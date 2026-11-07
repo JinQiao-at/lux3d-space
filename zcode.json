@@ -1,0 +1,17 @@
+{
+  "features": {
+    "mcp": true,
+    "skill": true,
+    "memory": true,
+    "subagent": false
+  },
+  "skills": {
+    "enabled": true
+  },
+  "plugins": {
+    "enabled": false
+  },
+  "ui": {
+    "locale": "zh-CN"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "lux3d-asset-pipeline",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Aholo Lux3D 资产生产管线：文生图 → 图生3D → GLB 归档 → 资产清单",
+  "scripts": {
+    "check": "node check-key.mjs",
+    "dry": "node generate-assets.mjs --dry-run",
+    "gen": "node generate-assets.mjs",
+    "gen:one": "node generate-assets.mjs --only"
+  },
+  "dependencies": {
+    "@manycore/aholo-sdk-lux3d": "^1.9.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.5.1"
+  }
+}
