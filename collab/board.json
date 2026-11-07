@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-07T05:55:37.398Z",
+  "updatedAt": "2026-11-07T08:01:56.806Z",
   "tasks": [
     {
       "id": "T-001",
@@ -85,8 +85,8 @@
     {
       "id": "T-003",
       "title": "项目报告书框架与证据链（PDF/PPT）",
-      "status": "pending",
-      "owner": null,
+      "status": "done",
+      "owner": "zcode",
       "priority": 2,
       "scope": [
         "docs"
@@ -97,10 +97,24 @@
         {
           "at": "2026-11-04T08:47:48.499Z",
           "text": "DSH 主责：报告书；ZCode 提供截图素材"
+        },
+        {
+          "at": "2026-11-07T07:59:47.859Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-07T07:59:48.304Z",
+          "text": "2小时倒计时 Owner 指令：ZCode 紧急产出报告书全文+视频脚本+提交 checklist（T-003/T-004 素材部分合并 docs/14）；录屏执行需人类"
+        },
+        {
+          "at": "2026-11-07T08:01:56.806Z",
+          "text": "done: 2h 紧急产出 docs/14 比赛提交包：提交清单(5项打勾)、一页纸说明、五维自评(带证据索引)、资产迭代对比表(-89%实测)、90s视频分镜脚本(前10s提灯钩子/9段)、局限如实、一句话亮点；已提交推送私仓；T-004 的录屏执行留给人类(脚本就绪)"
         }
       ],
       "createdAt": "2026-11-03T23:20:00+08:00",
-      "updatedAt": "2026-11-04T08:47:48.501Z"
+      "updatedAt": "2026-11-07T08:01:56.806Z",
+      "claimedAt": "2026-11-07T07:59:47.856Z",
+      "doneAt": "2026-11-07T08:01:56.803Z"
     },
     {
       "id": "T-004",
@@ -646,10 +660,14 @@
         {
           "at": "2026-11-07T05:55:37.398Z",
           "text": "done: 3DGS 实验模式黑屏修复（A2 网格翻转）：splatMesh.rotation.x=π（OpenCV -Y up → three +Y up），相机回归常规位(0,0,4)。视觉验证成功——蓝青色调高斯点云石室完整可见（截图）。教训沉淀：①A1 官方相机参数对 mkkellogg viewer 无效（其内部接管相机控制，网格级翻转才是正解）②WebGL readPixels 像素探针路线不可靠（主画布同判 0，无 preserveDrawingBuffer 时帧间清空）③splat 模式下截图需等 FadeIn 揭幕结束(~25s)才不超时"
+        },
+        {
+          "at": "2026-11-07T06:18:30.049Z",
+          "text": "closed-by: initial commit 195172b @ GitHub 私有仓 JinQiao-at/lux3d-space（Conventional Commits，body 引用全部任务号；工作区原无 git 历史，故为全量首提而非增量 diff——如实记录）；正式 verify 仍归 DSH"
         }
       ],
       "createdAt": "2026-11-07T05:42:42.614Z",
-      "updatedAt": "2026-11-07T05:55:37.398Z",
+      "updatedAt": "2026-11-07T06:18:30.052Z",
       "claimedAt": "2026-11-07T05:42:42.742Z",
       "doneAt": "2026-11-07T05:55:37.396Z"
     }
