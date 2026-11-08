@@ -24,9 +24,9 @@ curl.exe -X POST http://127.0.0.1:5182/api/knowledge/search -H "Content-Type: ap
 ## 接 PostgreSQL + pgvector（pg 模式）
 
 ```powershell
-docker compose up -d          # pgvector/pgvector:pg16，端口 5433，自动执行 db/schema.sql
+docker compose up -d          # pgvector/pgvector:pg16，宿主端口 25433，自动执行 db/schema.sql
 $env:LUX3D_MODE="pg"
-$env:DATABASE_URL="postgresql://lux3d:lux3d@127.0.0.1:5433/lux3d"
+$env:DATABASE_URL="postgresql://lux3d:lux3d@127.0.0.1:25433/lux3d"
 uvicorn app.main:app --host 127.0.0.1 --port 5182
 ```
 

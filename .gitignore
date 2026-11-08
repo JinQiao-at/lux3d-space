@@ -17,3 +17,6 @@ pipeline/lux3d/runs/*/raw/
 server/pip-unpack-*/
 
 .vercel
+
+# pip 安装临时目录残留（server/）
+server/pip-*/

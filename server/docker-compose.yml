@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: lux3d
       POSTGRES_DB: lux3d
     ports:
-      - "5433:5432"
+      - "25433:5432"
     volumes:
       - lux3d_pgdata:/var/lib/postgresql/data
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
