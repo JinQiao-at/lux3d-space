@@ -4,10 +4,19 @@ mock 模式让前端/答辩零依赖联调；pg 模式的生产表结构见 db/s
 """
 from __future__ import annotations
 
+import asyncio
+import sys
 from datetime import datetime, timezone
 from typing import Any
 
+from psycopg.types.json import Json
+
 from .config import Settings
+
+# psycopg 异步模式不支持 Windows 默认的 ProactorEventLoop；必须在事件循环创建前（即本模块
+# 被 uvicorn 导入时）切到 SelectorEventLoop，否则连接池初始化 15s 超时（PoolTimeout）。
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 _pool: Any = None
 _memory: dict[str, Any] = {"progress": {}, "events": []}
@@ -77,7 +86,7 @@ async def upsert_progress(player_id: str, payload: dict[str, Any]) -> dict[str, 
                     updated_at = NOW()
                 RETURNING state, save_version, played_seconds, updated_at
                 """,
-                (player_id, payload["state"], payload["save_version"], payload["played_seconds"], now),
+                (player_id, Json(payload["state"]), payload["save_version"], payload["played_seconds"], now),
             )
             row = await cur.fetchone()
     return {
@@ -96,5 +105,5 @@ async def append_event(name: str, player_id: str | None, payload: dict[str, Any]
         async with conn.cursor() as cur:
             await cur.execute(
                 "INSERT INTO narrative_events (name, player_id, payload) VALUES (%s, %s, %s)",
-                (name, player_id, payload),
+                (name, player_id, Json(payload)),
             )

@@ -114,36 +114,69 @@ class PgVectorRetriever:
             raise RuntimeError("pg 模式未初始化连接池")
         vector = await embed_text(req.query)
         if vector is None:
-            raise RuntimeError("未配置 EMBEDDING_*，无法进行向量检索")
+            # 未配置 EMBEDDING_*：降级为库内词法检索（与 mock 同一套打分/拒答逻辑），避免 500。
+            return await self._lexical_from_db(req)
 
-        where = ["TRUE"]
-        filter_params: list[object] = []
-        if req.zone_id:
-            where.append("zone_id = %s")
-            filter_params.append(req.zone_id)
-        if req.topics:
-            where.append("topics && %s::text[]")
-            filter_params.append(req.topics)
-        if req.min_confidence:
-            where.append("confidence = ANY(%s::text[])")
-            filter_params.append(list(_CONF_RANK)[: _CONF_RANK[req.min_confidence]])
-
-        sql = f"""
-            SELECT id, zone_id, object_id, camera_id, title, topics, content,
-                   sources, confidence, related_object_ids, spoiler_level,
-                   1 - (embedding <=> %s::vector) AS score
-            FROM knowledge_entries
-            WHERE {' AND '.join(where)}
-            ORDER BY embedding <=> %s::vector
-            LIMIT %s
-        """
-        # 占位符顺序：SELECT 打分向量 → WHERE 过滤参数 → ORDER BY 向量 → LIMIT
-        ordered_params = [vector, *filter_params, vector, req.limit]
         async with pool.connection() as conn:
             async with conn.cursor() as cur:
-                await cur.execute(sql, ordered_params)
+                await cur.execute(
+                    """
+                    SELECT id, zone_id, object_id, camera_id, title, topics, content,
+                           sources, confidence, related_object_ids, spoiler_level,
+                           1 - (embedding <=> %(vector)s::vector) AS score
+                    FROM knowledge_entries
+                    WHERE (COALESCE(%(zone_id)s, '') = '' OR zone_id = %(zone_id)s)
+                      AND (COALESCE(cardinality(%(topics)s::text[]), 0) = 0
+                           OR topics && %(topics)s::text[])
+                      AND (COALESCE(cardinality(%(min_conf)s::text[]), 0) = 0
+                           OR confidence = ANY(%(min_conf)s::text[]))
+                    ORDER BY embedding <=> %(vector)s::vector
+                    LIMIT %(limit)s
+                    """,
+                    self._query_params(req, vector=vector),
+                )
                 rows = await cur.fetchall()
         return [SearchHit(entry=self._row_to_entry(row), score=round(float(row[-1]), 4)) for row in rows]
+
+    @staticmethod
+    def _query_params(req: SearchRequest, **extra: object) -> dict[str, object]:
+        """命名参数固定模板：条件开关全部参数化，SQL 文本零拼接。
+
+        数组参数恒传 list（None 会被 psycopg 序列化成无效数组字面量），开关用 cardinality 判断。
+        """
+        params: dict[str, object] = {
+            "zone_id": req.zone_id,
+            "topics": list(req.topics) if req.topics else [],
+            "min_conf": list(_CONF_RANK)[: _CONF_RANK[req.min_confidence]] if req.min_confidence else [],
+            "limit": req.limit,
+        }
+        params.update(extra)
+        return params
+
+    async def _lexical_from_db(self, req: SearchRequest) -> list[SearchHit]:
+        """无 embedding 的词法降级：库内行交给 LexicalIndex（分制与 mock 一致）。"""
+        from .db import get_pool
+
+        pool = await get_pool()
+        if pool is None:
+            raise RuntimeError("pg 模式未初始化连接池")
+        async with pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    SELECT id, zone_id, object_id, camera_id, title, topics, content,
+                           sources, confidence, related_object_ids, spoiler_level
+                    FROM knowledge_entries
+                    WHERE (COALESCE(%(zone_id)s, '') = '' OR zone_id = %(zone_id)s)
+                      AND (COALESCE(cardinality(%(topics)s::text[]), 0) = 0
+                           OR topics && %(topics)s::text[])
+                      AND (COALESCE(cardinality(%(min_conf)s::text[]), 0) = 0
+                           OR confidence = ANY(%(min_conf)s::text[]))
+                    """,
+                    self._query_params(req),
+                )
+                rows = await cur.fetchall()
+        return LexicalIndex([self._row_to_entry(row) for row in rows]).search(req)
 
     def _row_to_entry(self, row: tuple) -> KnowledgeEntry:
         return KnowledgeEntry(

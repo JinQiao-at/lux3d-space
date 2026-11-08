@@ -27,8 +27,13 @@ curl.exe -X POST http://127.0.0.1:25432/api/knowledge/search -H "Content-Type: a
 docker compose up -d          # pgvector/pgvector:pg16，宿主端口 25433，自动执行 db/schema.sql
 $env:LUX3D_MODE="pg"
 $env:DATABASE_URL="postgresql://lux3d:lux3d@127.0.0.1:25433/lux3d"
-uvicorn app.main:app --host 127.0.0.1 --port 25432
+python run.py                 # pg 模式启动器（详见下方说明）
+python scripts/seed_pg.py     # 幂等灌入 seed_knowledge.json 的 17 条知识（embedding 留 NULL）
 ```
+
+> **pg 模式请用 `python run.py` 启动**：Windows 上 psycopg 异步要求 SelectorEventLoop，策略必须在
+> 事件循环创建前设置；直接 `python -m uvicorn` 会先建 loop 再 import app，导致连接池初始化超时
+> （PoolTimeout）。mock 模式不受影响，仍可直接 uvicorn。
 
 > 端口说明：示例用 25432；本机 Windows 保留了 5041–5763、8058–8157、8300–8399 等 TCP 段（5182/8765/8790 都在其中，WinError 10013），换一个未被排除的端口即可（DB 同理：5433→25433）。
 
@@ -40,7 +45,8 @@ EMBEDDING_MODEL=bge-m3
 EMBEDDING_API_KEY=sk-xxx
 ```
 
-未配置 embedding 时，pg 模式检索会返回 500 并提示；开发期请用 mock 模式或补齐 embedding 配置。
+未配置 embedding 时，pg 模式检索自动降级为**库内词法检索**（与 mock 同一套打分/拒答逻辑，不再 500）；
+配置后即走向量检索。
 
 ## API 一览
 
