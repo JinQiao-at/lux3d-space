@@ -98,7 +98,12 @@ def _fallback_answer(req: AgentAskRequest, citations: list[AgentCitation]) -> st
 async def answer_question(req: AgentAskRequest, retriever: Retriever) -> AgentAskResponse:
     hits = await retriever.search(SearchRequest(query=req.question, limit=3))
     citations = [
-        AgentCitation(id=hit.entry.id, title=hit.entry.title, sources=hit.entry.sources)
+        AgentCitation(
+            id=hit.entry.id,
+            title=hit.entry.title,
+            sources=hit.entry.sources,
+            confidence=hit.entry.confidence,
+        )
         for hit in hits
     ]
 

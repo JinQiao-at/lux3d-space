@@ -81,6 +81,7 @@ class AgentCitation(CamelModel):
     id: str
     title: str
     sources: list[str]
+    confidence: str = "verified"
 
 
 class ToolSuggestion(CamelModel):

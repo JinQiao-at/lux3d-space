@@ -22,6 +22,7 @@ import {
 } from './save.ts'
 import { answerQuestion } from './agent.ts'
 import type { AgentCitation, AgentToolCall } from './agent.ts'
+import { askServerAgent } from './serverAgent.ts'
 import { playSound, setMasterVolume } from './audio.ts'
 
 export type Panel = 'none' | 'journal' | 'archive' | 'agent' | 'pause' | 'ending' | 'map' | 'memory'
@@ -351,29 +352,41 @@ export const useGameStore = create<GameStore>((set, get) => ({
   askAgent: (question) => {
     const game = get().game
     const userMessage: AgentMessage = { id: newId(), role: 'user', text: question }
-    const reply = answerQuestion(question, { state: game })
-    const agentMessage: AgentMessage = {
-      id: newId(),
-      role: 'agent',
-      text: reply.text,
-      citations: reply.citations,
-      tools: reply.toolCalls,
-    }
-    set({ agentMessages: [...get().agentMessages, userMessage, agentMessage] })
+    set({ agentMessages: [...get().agentMessages, userMessage] })
 
-    if (reply.hintLevel) {
-      get().dispatch({ type: 'request_hint', level: reply.hintLevel })
-    }
-    if (reply.focus) {
-      get().focusCamera(reply.focus.cameraId, reply.focus.title, reply.focus.objectId ?? undefined)
-    }
-    if (reply.highlightObjectId) {
-      get().highlightObject(reply.highlightObjectId, 4000)
-    }
-    if (reply.narration) {
-      set({ log: appendLog(get().log, `【Agent】${reply.narration}`, 'agent') })
-    }
-    playSound('ui')
+    // server Agent 接线（可选增强）：FastAPI 可达走真检索（带来源引用），否则降级本地规则引擎；
+    // 两条路的回答都只经 AgentReply 副作用管道生效，只读边界不变。
+    void (async () => {
+      const reply =
+        (await askServerAgent(question, {
+          stage: game.stage,
+          zone: game.zone,
+          lanternLit: game.lanternLit,
+          flags: game.flags,
+        })) ?? answerQuestion(question, { state: game })
+      const agentMessage: AgentMessage = {
+        id: newId(),
+        role: 'agent',
+        text: reply.text,
+        citations: reply.citations,
+        tools: reply.toolCalls,
+      }
+      set({ agentMessages: [...get().agentMessages, agentMessage] })
+
+      if (reply.hintLevel) {
+        get().dispatch({ type: 'request_hint', level: reply.hintLevel })
+      }
+      if (reply.focus) {
+        get().focusCamera(reply.focus.cameraId, reply.focus.title, reply.focus.objectId ?? undefined)
+      }
+      if (reply.highlightObjectId) {
+        get().highlightObject(reply.highlightObjectId, 4000)
+      }
+      if (reply.narration) {
+        set({ log: appendLog(get().log, `【Agent】${reply.narration}`, 'agent') })
+      }
+      playSound('ui')
+    })()
   },
 
   startTour: () => {

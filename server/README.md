@@ -10,15 +10,15 @@ cd lux3d-space\server
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn app.main:app --host 127.0.0.1 --port 5182
+uvicorn app.main:app --host 127.0.0.1 --port 25432
 ```
 
-- 健康检查：`http://127.0.0.1:5182/api/health`
-- 交互式文档：`http://127.0.0.1:5182/docs`
+- 健康检查：`http://127.0.0.1:25432/api/health`
+- 交互式文档：`http://127.0.0.1:25432/docs`
 
 ```powershell
-curl.exe http://127.0.0.1:5182/api/health
-curl.exe -X POST http://127.0.0.1:5182/api/knowledge/search -H "Content-Type: application/json" -d "{\"query\":\"符号\",\"limit\":3}"
+curl.exe http://127.0.0.1:25432/api/health
+curl.exe -X POST http://127.0.0.1:25432/api/knowledge/search -H "Content-Type: application/json" -d "{\"query\":\"符号\",\"limit\":3}"
 ```
 
 ## 接 PostgreSQL + pgvector（pg 模式）
@@ -27,10 +27,10 @@ curl.exe -X POST http://127.0.0.1:5182/api/knowledge/search -H "Content-Type: ap
 docker compose up -d          # pgvector/pgvector:pg16，宿主端口 25433，自动执行 db/schema.sql
 $env:LUX3D_MODE="pg"
 $env:DATABASE_URL="postgresql://lux3d:lux3d@127.0.0.1:25433/lux3d"
-uvicorn app.main:app --host 127.0.0.1 --port 5182
+uvicorn app.main:app --host 127.0.0.1 --port 25432
 ```
 
-> 端口说明：示例用 5182；本机 Windows 保留了 8058–8157、8300–8399 等 TCP 段，8765/8790 可能绑定失败（WinError 10013），换一个未被排除的端口即可。
+> 端口说明：示例用 25432；本机 Windows 保留了 5041–5763、8058–8157、8300–8399 等 TCP 段（5182/8765/8790 都在其中，WinError 10013），换一个未被排除的端口即可（DB 同理：5433→25433）。
 
 pg 模式下检索走 `embedding <=> query` 余弦距离；需要配置 OpenAI 兼容的 embedding 服务：
 
