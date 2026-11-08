@@ -12,6 +12,8 @@ import asyncio
 import sys
 
 if sys.platform == "win32":
+    # 技术债：WindowsSelectorEventLoopPolicy 在 Python 3.16 将移除（3.14 已 deprecate）。
+    # 升级 Python 时改用 asyncio.run(..., loop_factory=asyncio.SelectorEventLoop) 或等价方案。
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 import uvicorn  # noqa: E402
