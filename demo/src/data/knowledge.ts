@@ -56,7 +56,7 @@ export const KNOWLEDGE_BASE: KnowledgeEntry[] = [
     id: 'kb_painting',
     zoneId: 'zone_study',
     objectId: 'obj_study_painting',
-    cameraId: 'cam_study_desk',
+    cameraId: 'cam_study_painting',
     title: '黄昏书房油画',
     topics: ['油画', '艺术史'],
     content:
@@ -70,7 +70,7 @@ export const KNOWLEDGE_BASE: KnowledgeEntry[] = [
     id: 'kb_mirror',
     zoneId: 'zone_study',
     objectId: 'obj_study_mirror',
-    cameraId: 'cam_study_desk',
+    cameraId: 'cam_study_mirror',
     title: '落地镜上的雾痕',
     topics: ['镜子', '线索', '超自然'],
     content:
@@ -112,7 +112,7 @@ export const KNOWLEDGE_BASE: KnowledgeEntry[] = [
     id: 'kb_basin_inscription',
     zoneId: 'zone_basement',
     objectId: 'obj_basement_basin',
-    cameraId: 'cam_basement_mural',
+    cameraId: 'cam_basement_basin',
     title: '洗手台底部的刻文',
     topics: ['铭文', '校验'],
     content:

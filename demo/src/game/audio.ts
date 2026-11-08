@@ -160,6 +160,14 @@ export function playSound(name: SoundName): void {
       case 'footstep':
         noise(ctx, { start: t, duration: 0.09, gain: 0.06, frequency: 320 })
         break
+      case 'bell':
+        // 三声钟响（镜子叙事的核心意象；三个衰减正弦簇 + 泛音）
+        for (const offset of [0, 1.2, 2.4]) {
+          tone(ctx, { type: 'sine', from: 196, start: t + offset, duration: 1.6, gain: 0.16 })
+          tone(ctx, { type: 'sine', from: 392, start: t + offset, duration: 1.1, gain: 0.07 })
+          tone(ctx, { type: 'sine', from: 588, start: t + offset, duration: 0.7, gain: 0.035 })
+        }
+        break
       case 'ui':
       default:
         tone(ctx, { type: 'sine', from: 880, start: t, duration: 0.06, gain: 0.04 })
@@ -167,5 +175,80 @@ export function playSound(name: SoundName): void {
     }
   } catch {
     // 音频失败不影响玩法
+  }
+}
+
+// ===== 环境声循环（T-025）：rain 书房 / drip 地下室。零音频文件，节点常驻至 stop =====
+
+let rainNodes: { source: AudioBufferSourceNode; gain: GainNode } | null = null
+let dripTimer: ReturnType<typeof setInterval> | null = null
+let dripStopAt = 0
+
+/** 书房雨声：粉噪声低通循环。startRain 已在跑时幂等。 */
+export function startRain(): void {
+  const ctx = getContext()
+  if (!ctx || ctx.state === 'suspended' || rainNodes) return
+  try {
+    const source = ctx.createBufferSource()
+    source.buffer = createNoiseBuffer(ctx)
+    source.loop = true
+    const filter = ctx.createBiquadFilter()
+    filter.type = 'lowpass'
+    filter.frequency.value = 900
+    const gain = ctx.createGain()
+    gain.gain.value = 0.05
+    source.connect(filter)
+    filter.connect(gain)
+    gain.connect(master as GainNode)
+    source.start()
+    rainNodes = { source, gain }
+  } catch {
+    // 音频失败不影响玩法
+  }
+}
+
+export function stopRain(): void {
+  if (!rainNodes) return
+  try {
+    rainNodes.gain.gain.setTargetAtTime(0, getContext()!.currentTime, 0.4)
+    const nodes = rainNodes
+    setTimeout(() => {
+      try {
+        nodes.source.stop()
+      } catch {
+        /* 已停止 */
+      }
+    }, 1200)
+  } catch {
+    /* 忽略 */
+  }
+  rainNodes = null
+}
+
+/** 地下室滴水：每 2.2s 一滴（随机化间隔更像真实滴水）。startDrip 幂等；自动持续到 stopDrip。 */
+export function startDrip(): void {
+  const ctx = getContext()
+  if (!ctx || dripTimer) return
+  dripStopAt = Number.MAX_SAFE_INTEGER
+  const drop = () => {
+    if (!dripTimer) return
+    try {
+      tone(ctx, { type: 'sine', from: 1400, to: 900, start: ctx.currentTime + 0.01, duration: 0.1, gain: 0.09 })
+      tone(ctx, { type: 'sine', from: 620, start: ctx.currentTime + 0.02, duration: 0.22, gain: 0.05 })
+    } catch {
+      /* 忽略 */
+    }
+  }
+  drop()
+  dripTimer = setInterval(() => {
+    if (Date.now() > dripStopAt) return
+    drop()
+  }, 2200 + Math.floor(Math.random() * 900))
+}
+
+export function stopDrip(): void {
+  if (dripTimer) {
+    clearInterval(dripTimer)
+    dripTimer = null
   }
 }

@@ -87,6 +87,7 @@ export type SoundName =
   | 'ui'
   | 'hint'
   | 'footstep'
+  | 'bell'
 
 export type Vec3 = [number, number, number]
 

@@ -7,7 +7,8 @@ declare module '@mkkellogg/gaussian-splats-3d' {
     [key: string]: unknown
   }
   export interface AddSplatSceneOptions {
-    format?: 'ply' | 'spz' | 'splat' | 'ksplat'
+    /** 运行时为数字枚举（Splat=0/KSplat=1/Ply=2/Spz=3）；扩展名字符串会被 0.4.7 的分发器拒绝 */
+    format?: number
     dynamicScene?: boolean
     sceneRevealMode?: number
     [key: string]: unknown

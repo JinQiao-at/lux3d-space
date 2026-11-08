@@ -12,6 +12,8 @@ import { useGameStore } from '../game/store.ts'
 import { Modal } from './Modal.tsx'
 
 const PANO_URL = './splats/memory-corridor-pano.jpg'
+// T-025 B2 两轮规则结论：SPZ 在 mkkellogg 0.4.7 加载成功（4.7MB/21ms）但渲染黑屏（解码器实现缺，
+// 枚举有但分发链不走）——回退 PLY 18.4MB（渲染已验证）。SPZ 待官方 viewer 或 0.4.8+ 再启用。
 const SPLAT_URL = './splats/memory-corridor-hd.ply'
 
 /** 3DGS 实时点云为实验模式（黑屏排查中）；默认全景图，按钮可切换供 DSH/Owner 验收。 */
@@ -113,8 +115,7 @@ export function MemoryPanel() {
 
         await viewer.addSplatScene(SPLAT_URL, {
           dynamicScene: false,
-          sceneRevealMode: 1, // FadeIn
-          // format 不传：按 .ply/.spz 扩展名自动识别（枚举值是数字，传字符串会落空）
+          sceneRevealMode: 1, // FadeIn（PLY 按扩展名自动识别）
         })
 
         if (disposed) {
@@ -160,7 +161,7 @@ export function MemoryPanel() {
         <div className="memory-stage" ref={canvasHost} aria-label="3DGS 场景">
           {status !== 'error' && status !== 'ready' && (
             <div className="memory-status">
-              <p className="muted">正在浮现空间记忆…（实验模式，加载约 18MB）</p>
+              <p className="muted">正在浮现空间记忆…（实验模式，PLY 已验证可渲染，加载约 18MB）</p>
             </div>
           )}
           {status === 'error' && (

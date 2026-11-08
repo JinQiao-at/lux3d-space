@@ -6,6 +6,7 @@ import type { Vec3 } from '../game/types.ts'
 import { EYE_HEIGHT, ZONES, zoneObjects } from '../data/scene.ts'
 import { findInteractionCandidate, hasMetConditions, resolveMovement } from '../game/interaction.ts'
 import { useGameStore } from '../game/store.ts'
+import { playSound } from '../game/audio.ts'
 
 const WALK_SPEED = 2.15
 const RUN_SPEED = 3.7
@@ -23,6 +24,7 @@ export function Player() {
   const keys = useRef<Record<string, boolean>>({})
   const interactionAcc = useRef(0)
   const poseAcc = useRef(0)
+  const footstepAcc = useRef(0)
 
   const setInteraction = useGameStore((state) => state.setInteraction)
   const syncPose = useGameStore((state) => state.syncPose)
@@ -97,6 +99,14 @@ export function Player() {
       const desired: Vec3 = [camera.position.x + move.x * speed * dt, camera.position.y, camera.position.z + move.z * speed * dt]
       const resolved = resolveMovement(current, desired, zoneDef)
       camera.position.set(resolved[0], EYE_HEIGHT, resolved[2])
+
+      // 脚步声（T-025）：按移动距离累计步频，走 0.72m 一步 / 跑 0.95m 一步
+      footstepAcc.current += Math.hypot(resolved[0] - current[0], resolved[2] - current[2])
+      const stride = running ? 0.95 : 0.72
+      if (footstepAcc.current >= stride) {
+        footstepAcc.current = 0
+        playSound('footstep')
+      }
     }
 
     interactionAcc.current += dt

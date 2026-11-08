@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-07T08:01:56.806Z",
+  "updatedAt": "2026-11-08T05:11:38.252Z",
   "tasks": [
     {
       "id": "T-001",
@@ -670,6 +670,67 @@
       "updatedAt": "2026-11-07T06:18:30.052Z",
       "claimedAt": "2026-11-07T05:42:42.742Z",
       "doneAt": "2026-11-07T05:55:37.396Z"
+    },
+    {
+      "id": "T-024",
+      "title": "闭环完全性验收（4 项：坏包拒审/对抗契约/可视/Endor 缺口显性化）",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 1,
+      "scope": [
+        "docs",
+        "docs/findings"
+      ],
+      "acceptance": "4 项逐项跑逐项回报，全绿宣布闭环成立；有红回写 findings+补丁重跑",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-07T14:32:02.060Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-07T14:37:37.989Z",
+          "text": "验收第 1 项 ✅（红队 reject 路径通，findings 已落档）。开始第 2 项：story-agent 三对抗用例"
+        },
+        {
+          "at": "2026-11-07T14:47:50.018Z",
+          "text": "四项验收：①红队 reject ✅ ②对抗 3/3 全绿（字节级）③可视 PASS（检索矩阵+渲染完整+清单3/3）④Endor 缺口显性化 → issue #4。全绿，闭环完全性成立"
+        },
+        {
+          "at": "2026-11-07T14:47:50.142Z",
+          "text": "done: 闭环完全性验收 4/4 全绿：①红队坏包被 reviewer 正确 reject(BLOCKED) ②story-agent 三对抗用例四契约零突破(字节级存档对比) ③findings 可检索可渲染清单3/3 ④Endor 缺口显性化为 issue#4(触发条件+负责人占位)。findings 文档×3 已 commit"
+        }
+      ],
+      "createdAt": "2026-11-07T14:32:01.897Z",
+      "updatedAt": "2026-11-07T14:47:50.142Z",
+      "claimedAt": "2026-11-07T14:32:02.056Z",
+      "doneAt": "2026-11-07T14:47:50.141Z"
+    },
+    {
+      "id": "T-025",
+      "title": "诊断驱动修复：文本-资产对齐+AABB+叙事音频+中优先4件",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 1,
+      "scope": [
+        "demo/src"
+      ],
+      "acceptance": "文本-资产穿帮消除；AABB 对齐 GLB bbox；雨/滴/钟/footstep 音频补齐；cameraId 2 处修复；build+单测绿；种子实跑音频触发",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-08T04:35:25.180Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-08T05:11:38.252Z",
+          "text": "done: 诊断驱动修复全落地：①文本-资产对齐（木梯→石阶×9处清零、转盘描述改罗马数字+鸟首/斧刃/钥匙匹配GLB、cameraId 3处错指修复且同步修测试断言固化bug本体）②AABB 重写对齐 T-005 实测bbox（desk/bookshelf/fireplace 收窄消除隐形墙+secret_door/stairs 新增防穿模）③叙事音频补齐（bell 三声钟响接镜子/rain 循环书房/drip 循环地下室/footstep 步频接入移动）④GLB 标题屏预加载消除换装跳变 ⑤SPZ 两轮验证：加载成功但渲染黑屏（0.4.7 解码实现缺）→按规则回退 PLY 并如实记档。build+27/27 全绿"
+        }
+      ],
+      "createdAt": "2026-11-08T04:35:25.025Z",
+      "updatedAt": "2026-11-08T05:11:38.252Z",
+      "claimedAt": "2026-11-08T04:35:25.178Z",
+      "doneAt": "2026-11-08T05:11:38.251Z"
     }
   ]
 }

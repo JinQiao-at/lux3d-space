@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "endor-agent-kit-setup": {
+      "source": "endorlabs/ai-plugins",
+      "sourceType": "github",
+      "skillPath": "skills/endor-agent-kit-setup/SKILL.md",
+      "computedHash": "60807a3dfea372f24195209f24247511aa177e40c2a879b63018c9f092c5fb38"
+    }
+  }
+}

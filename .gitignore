@@ -15,3 +15,5 @@ server/.env*
 demo/.env.local
 pipeline/lux3d/runs/*/raw/
 server/pip-unpack-*/
+
+.vercel

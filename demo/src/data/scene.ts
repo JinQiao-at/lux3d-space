@@ -108,7 +108,7 @@ const basementObjects: SceneObjectDef[] = [
   {
     id: 'obj_basement_stairs',
     zoneId: 'zone_basement',
-    name: '来时的木梯',
+    name: '来时的石阶',
     action: 'use',
     position: [3.5, 0.8, 3.3],
     interactDistance: 2.4,
@@ -116,7 +116,7 @@ const basementObjects: SceneObjectDef[] = [
     knowledgeIds: [],
     conditions: { flags: ['cellar_open'] },
     blockedText: '头顶只有石头。你记不清自己是怎么下来的。',
-    description: '木梯向上通回书房，梯脚积着水。',
+    description: '螺旋石阶向上通回书房，阶脚积着水。',
   },
   {
     id: 'obj_basement_shower',
@@ -168,7 +168,7 @@ const basementObjects: SceneObjectDef[] = [
     knowledgeIds: ['kb_mural_symbols', 'kb_basin_inscription'],
     conditions: { flags: ['clue_symbols', 'clue_basin'], lanternLit: true },
     blockedText: '转盘纹丝不动。你还没读懂它们的规则。',
-    description: '第一个铜盘，边缘刻着三角。',
+    description: '第一个铜盘，盘面刻着罗马数字，盘心铸着一只鸟首。',
     dialValue: 1,
   },
   {
@@ -182,7 +182,7 @@ const basementObjects: SceneObjectDef[] = [
     knowledgeIds: ['kb_mural_symbols', 'kb_basin_inscription'],
     conditions: { flags: ['clue_symbols', 'clue_basin'], lanternLit: true },
     blockedText: '转盘纹丝不动。你还没读懂它们的规则。',
-    description: '第二个铜盘，边缘刻着圆环。',
+    description: '第二个铜盘，盘面刻着罗马数字，盘心铸着一柄斧刃。',
     dialValue: 2,
   },
   {
@@ -196,7 +196,7 @@ const basementObjects: SceneObjectDef[] = [
     knowledgeIds: ['kb_mural_symbols', 'kb_basin_inscription'],
     conditions: { flags: ['clue_symbols', 'clue_basin'], lanternLit: true },
     blockedText: '转盘纹丝不动。你还没读懂它们的规则。',
-    description: '第三个铜盘，边缘刻着方框。',
+    description: '第三个铜盘，盘面刻着罗马数字，盘心铸着一把钥匙。',
     dialValue: 3,
   },
   {
@@ -247,15 +247,22 @@ export const OBJECTS: Record<string, SceneObjectDef> = Object.fromEntries(
   OBJECT_LIST.map((object) => [object.id, object]),
 )
 
+// AABB 对齐 GLB 实测 bbox（T-005/asset-calibration 数据；放置点=底部中心，下同）
+// 书桌 GLB 0.98(X)×0.72(Z) @ [0,0,-2.6]；书架 2.23(X,rotY90 后贴墙向 Z)×0.72(Z) @ [-4.55,0,-0.8]；
+// 壁炉 1.51(X)×0.82(Z) @ [4.55,0,0.6]。
 const studyColliders: Aabb[] = [
-  { id: 'col_desk', min: [-1.3, 0, -3.2], max: [1.3, 0.9, -1.9] },
-  { id: 'col_bookshelf', min: [-4.9, 0, -2.5], max: [-4.15, 2.6, 0.9] },
-  { id: 'col_fireplace', min: [4.15, 0, -0.5], max: [4.9, 1.6, 1.7] },
+  { id: 'col_desk', min: [-0.5, 0, -3.05], max: [0.5, 0.85, -2.15] },
+  { id: 'col_bookshelf', min: [-4.9, 0, -1.92], max: [-4.2, 2.6, 0.32] },
+  { id: 'col_fireplace', min: [4.3, 0, 0.2], max: [4.9, 1.61, 1.0] },
 ]
 
+// 地下室：淋浴门 GLB 1.03×0.19 @ [-3.0,0,-2.8]；洗手台 0.59(X,rotY-90 后 Z 向)×0.50 @ [4.1,0,1.4]；
+// 转盘挂北墙 1.23 高处不参与地面碰撞；暗门 0.92(X,rotY-90)×0.47 嵌东墙 @ [4.5,0,-2.4]；石阶 1.13×1.10 @ [3.5,0,3.4]。
 const basementColliders: Aabb[] = [
-  { id: 'col_shower', min: [-3.9, 0, -3.7], max: [-2.1, 2.2, -1.9] },
-  { id: 'col_basin', min: [3.6, 0, 0.85], max: [4.55, 1.3, 1.95] },
+  { id: 'col_shower', min: [-3.55, 0, -2.95], max: [-2.45, 2.0, -2.65] },
+  { id: 'col_basin', min: [3.85, 0, 1.1], max: [4.35, 0.95, 1.7] },
+  { id: 'col_secret_door', min: [4.27, 0, -2.86], max: [4.73, 2.2, -1.94] },
+  { id: 'col_stairs', min: [2.94, 0, 2.85], max: [4.06, 1.5, 3.95] },
 ]
 
 const chamberColliders: Aabb[] = [
@@ -333,7 +340,7 @@ export const CAMERA_LIST: CameraAnchor[] = [
   { id: 'cam_basement_basin', zoneId: 'zone_basement', title: '洗手台', position: [2.4, 1.5, 1.4], lookAt: [4.3, 1.0, 1.4] },
   { id: 'cam_basement_dials', zoneId: 'zone_basement', title: '三个转盘', position: [1.9, 1.6, -1.8], lookAt: [1.9, 1.35, -3.9] },
   { id: 'cam_basement_secret_door', zoneId: 'zone_basement', title: '暗门', position: [1.5, 1.5, -2.4], lookAt: [4.46, 1.25, -2.4] },
-  { id: 'cam_basement_stairs', zoneId: 'zone_basement', title: '木梯', position: [2.0, 1.7, 2.2], lookAt: [3.5, 1.0, 3.3] },
+  { id: 'cam_basement_stairs', zoneId: 'zone_basement', title: '石阶', position: [2.0, 1.7, 2.2], lookAt: [3.5, 1.0, 3.3] },
   { id: 'cam_chamber_pedestal', zoneId: 'zone_chamber', title: '石台', position: [0, 1.7, 0.9], lookAt: [0, 1.2, -1.6] },
   { id: 'cam_chamber_tapestry', zoneId: 'zone_chamber', title: '挂毯', position: [0, 1.8, -1.0], lookAt: [0, 2.0, -3.5] },
 ]

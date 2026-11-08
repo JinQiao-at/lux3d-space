@@ -285,7 +285,7 @@ function StudyProps() {
   )
 }
 
-/** 地下室：淋浴间玻璃门、石壁浮雕、铜管洗手台、三个转盘、暗门、木梯。 */
+/** 地下室：淋浴间玻璃门、石壁浮雕、铜管洗手台、三个转盘、暗门、石阶。 */
 function BasementProps() {
   const dialOrder = useGameStore((state) => state.game.dialOrder)
   const dialsSolved = useGameStore((state) => state.game.flags.dials_solved)
@@ -478,7 +478,7 @@ function BasementProps() {
         </group>
       </PropAsset>
 
-      {/* 木梯（回到书房） */}
+      {/* 石阶（回到书房） */}
       <PropAsset objectId="obj_basement_stairs" position={[3.5, 0, 3.4]}>
         <group position={[3.5, 0, 3.4]}>
           {[0, 1, 2, 3, 4, 5].map((step) => (

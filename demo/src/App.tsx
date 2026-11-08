@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import type { Action } from './game/types.ts'
 import { EYE_HEIGHT, OBJECTS } from './data/scene.ts'
 import { useGameStore } from './game/store.ts'
-import { ensureAudio, setMasterVolume } from './game/audio.ts'
+import { ensureAudio, setMasterVolume, startRain, stopRain, startDrip, stopDrip } from './game/audio.ts'
 import { World } from './scene/World.tsx'
 import { DarknessOverlay, HUD } from './ui/HUD.tsx'
 import { ClickHint, NarrationLog } from './ui/Overlays.tsx'
@@ -17,12 +17,14 @@ import { MapPanel } from './ui/MapPanel.tsx'
 import { MemoryPanel } from './ui/MemoryPanel.tsx'
 import { FocusCard } from './ui/FocusCard.tsx'
 import { requestScenePointerLock } from './ui/dom.ts'
+import { preloadRegisteredGlbs } from './scene/preloadGlbs.ts'
 
 export default function App() {
   const started = useGameStore((state) => state.started)
   const panel = useGameStore((state) => state.panel)
   const tour = useGameStore((state) => state.tour)
   const volume = useGameStore((state) => state.game.settings.volume)
+  const zone = useGameStore((state) => state.game.zone)
 
   useEffect(() => {
     setMasterVolume(volume)
@@ -103,6 +105,35 @@ export default function App() {
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
+
+  // GLB 预热（T-025 B2）：标题屏阅读操作说明的窗口期把网络+解析做掉，消除 zone 切换换装跳变
+  useEffect(() => {
+    preloadRegisteredGlbs()
+  }, [])
+
+  // 环境声循环随 zone 切换（T-025）：书房雨声 / 地下室滴水；面板打开时静音省资源
+  useEffect(() => {
+    if (!started) {
+      stopRain()
+      stopDrip()
+      return
+    }
+    if (panel !== 'none' && panel !== 'ending') {
+      stopRain()
+      stopDrip()
+      return
+    }
+    if (zone === 'zone_study') {
+      startRain()
+      stopDrip()
+    } else if (zone === 'zone_basement') {
+      stopRain()
+      startDrip()
+    } else {
+      stopRain()
+      stopDrip()
+    }
+  }, [started, panel, zone])
 
   // 游戏内计时（暂停/结局/镜头定位时不计时）。
   useEffect(() => {

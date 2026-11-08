@@ -185,7 +185,7 @@ function interact(state: GameState, objectId: string): InteractionOutcome {
     case 'obj_study_mirror': {
       narrate(effects, OBJECT_SUCCESS.obj_study_mirror)
       recordJournal(state, effects, 'mirror_echo')
-      effects.push({ kind: 'sound', sound: 'ui' })
+      effects.push({ kind: 'sound', sound: 'bell' }) // T-025：镜子叙事的核心意象「三声钟响」首次有了声音
       return { ok: true, state, effects }
     }
 

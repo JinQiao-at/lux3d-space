@@ -464,7 +464,8 @@ test('档案检索：关键词、topic 过滤、无命中为空', () => {
 
   const entry = KNOWLEDGE_BASE.find((item) => item.id === 'kb_painting')
   assert.ok(entry)
-  assert.equal(focusTargetOf(entry as (typeof KNOWLEDGE_BASE)[number]).cameraId, 'cam_study_desk')
+  // T-025 修复：cameraId 曾错指 cam_study_desk（档案"去看"跳错机位），现对齐对象绑定机位
+  assert.equal(focusTargetOf(entry as (typeof KNOWLEDGE_BASE)[number]).cameraId, 'cam_study_painting')
 })
 
 test('受控 Agent：回答引用条目、无命中不编造、工具白名单校验', () => {
