@@ -773,3 +773,31 @@ test('T-019 地图与收集进度：zone 契约完整、visited 单调、日记�
     assert.ok((ZONE_FIRST_ENTER_LINES[zoneId] ?? []).length >= 3, `${zoneId} 首访文案应 ≥3 行`)
   }
 })
+
+test('B2 挂毯背面硬物：首次 search 置自由旗标，再次 search 给出 A16-025 镜厅钩子', () => {
+  const states = playHappyPath()
+  const chamber = states[7] // afterSecretDoor：已进密室
+  assert.equal(chamber.zone, 'zone_chamber')
+
+  const first = applyAction(chamber, { type: 'search' , objectId: 'obj_chamber_tapestry' })
+  assert.equal(first.ok, true)
+  assert.equal(first.state.flags.tapestry_looked, true, '自由旗标 tapestry_looked 应置位')
+  const firstTexts = first.effects.map((effect) => (effect.kind === 'narration' ? effect.text : '')).join('\n')
+  assert.ok(firstTexts.includes('硌到一块硬物'), '首次 search 应提示背面硬物')
+
+  const second = applyAction(first.state, { type: 'search', objectId: 'obj_chamber_tapestry' })
+  assert.equal(second.ok, true)
+  const secondTexts = second.effects.map((effect) => (effect.kind === 'narration' ? effect.text : '')).join('\n')
+  assert.ok(secondTexts.includes('A16-025'), '再次 search 应揭示 A16-025 黄铜小牌')
+  assert.ok(secondTexts.includes('镜厅'), '钩子文案应衔接记忆回廊的镜厅伏笔')
+})
+
+test('B2 契约：tapestry_looked 走自由键、不进入 FLAG_KEYS 主线契约（与 basin_compartment_open 同款）', () => {
+  assert.ok(!FLAG_KEYS.includes('tapestry_looked' as never), '支线旗标不得进入 FLAG_KEYS 主线契约')
+  const states = playHappyPath()
+  const chamber = states[7]
+  const first = applyAction(chamber, { type: 'search', objectId: 'obj_chamber_tapestry' })
+  assert.equal(first.state.flags.tapestry_looked, true)
+  // 存档白名单清洗自由旗标是有意设计：重开可重搜，奖励是叙事钩子、无进度损失
+  assert.equal(FLAG_KEYS.length, 9, '主线 flags 契约仍是 9 个')
+})
