@@ -48,6 +48,19 @@ EMBEDDING_API_KEY=sk-xxx
 未配置 embedding 时，pg 模式检索自动降级为**库内词法检索**（与 mock 同一套打分/拒答逻辑，不再 500）；
 配置后即走向量检索。
 
+## LLM Agent（T-026，issue #3 清单项）
+
+`server/.env`（gitignored）配置后，`/api/agent/ask` 的回答由 LLM function calling 生成：
+
+```env
+LLM_API_KEY=你的key
+LLM_MODEL=glm-4-flash      # 默认智谱免费档；任意 OpenAI 兼容 chat 接口改 LLM_API_URL 即可
+```
+
+- server 端真执行只读数据工具（search_knowledge / get_player_state / list_zone_objects），
+  视觉/叙事/提示类（focus_object 等）转 suggestedTools 由前端执行——只读边界不变；
+- 任何失败静默降级模板拼装（0.1s 出答案），游戏主链不受影响；无命中时保持「不编造」拒答。
+
 ## API 一览
 
 | 方法 | 路径 | 说明 |

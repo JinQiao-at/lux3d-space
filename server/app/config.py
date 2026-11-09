@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     database_url: str = ""
     embedding_dim: int = 1024
     cors_origins: str = "http://127.0.0.1:5180,http://localhost:5180"
+    # LLM function calling（agent.py T-026）：默认智谱 glm-4-flash（免费档）；无 key 自动降级模板
+    llm_api_url: str = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+    llm_model: str = "glm-4-flash"
+    llm_api_key: str = ""
 
     @property
     def use_pg(self) -> bool:
