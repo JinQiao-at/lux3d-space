@@ -12,12 +12,28 @@ export function PauseMenu() {
   const setPanel = useGameStore((state) => state.setPanel)
   const exportSave = useGameStore((state) => state.exportSave)
   const importSave = useGameStore((state) => state.importSave)
+  const restoreFromCloud = useGameStore((state) => state.restoreFromCloud)
   const restart = useGameStore((state) => state.restart)
   const saveNow = useGameStore((state) => state.saveNow)
   const updateSettings = useGameStore((state) => state.updateSettings)
   const pushLog = useGameStore((state) => state.pushLog)
   const fileInput = useRef<HTMLInputElement>(null)
   const [status, setStatus] = useState('')
+  const [cloudBusy, setCloudBusy] = useState(false)
+
+  const handleRestoreCloud = async () => {
+    if (cloudBusy) return
+    setCloudBusy(true)
+    setStatus('正在从云端读取存档…')
+    const error = await restoreFromCloud()
+    setCloudBusy(false)
+    if (error) {
+      setStatus(error)
+      return
+    }
+    setStatus('已从云端恢复存档。')
+    setPanel('none')
+  }
 
   const handleExport = () => {
     const { filename, json } = exportSave()
@@ -66,6 +82,9 @@ export function PauseMenu() {
           </button>
           <button className="ghost-button" onClick={() => fileInput.current?.click()}>
             导入存档 JSON
+          </button>
+          <button className="ghost-button" onClick={handleRestoreCloud} disabled={cloudBusy}>
+            从云端恢复存档
           </button>
           <button
             className="ghost-button"

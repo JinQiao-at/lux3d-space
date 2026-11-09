@@ -26,6 +26,7 @@ import {
   HINTS,
   JOURNAL_ENTRIES,
   OBJECT_SUCCESS,
+  TAPESTRY_HIDDEN_LINES,
   STAGE_META,
   USE_ITEM_WRONG_LINES,
   ZONE_ENTER_LINES,
@@ -262,7 +263,15 @@ function interact(state: GameState, objectId: string): InteractionOutcome {
 
     case 'obj_chamber_tapestry': {
       narrate(effects, OBJECT_SUCCESS.obj_chamber_tapestry)
-      effects.push({ kind: 'sound', sound: 'ui' })
+      // B2 支线：挂毯背面硬物（两段 search；自由旗标不持久化，与 basin_compartment_open 同款约定）
+      if (!state.flags.tapestry_looked) {
+        state.flags = { ...state.flags, tapestry_looked: true }
+        narrate(effects, TAPESTRY_HIDDEN_LINES.felt)
+        effects.push({ kind: 'sound', sound: 'ui' })
+        return { ok: true, state, effects }
+      }
+      narrate(effects, TAPESTRY_HIDDEN_LINES.revealed)
+      effects.push({ kind: 'sound', sound: 'stone' })
       return { ok: true, state, effects }
     }
 

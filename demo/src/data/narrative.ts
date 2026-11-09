@@ -262,6 +262,15 @@ export const JOURNAL_ENTRIES: Record<string, JournalEntry> = {
 
 export const BLOCKED_DEFAULT = '你看了看。什么也没有发生。\n这间屋子对没有准备好的人很有耐心。'
 
+/** B2 支线：密室挂毯背面硬物（两段 search；旗标 tapestry_looked 为自由键，不持久化——与 basin_compartment_open 同款约定）。 */
+export const TAPESTRY_HIDDEN_LINES: { felt: string[]; revealed: string[] } = {
+  felt: ['指尖隔着绒面硌到一块硬物——挂杆卡得很紧，绒布背面鼓着一小块。'],
+  revealed: [
+    '你顺着挂杆把挂毯掀起一角。背面的墙灰里嵌着一枚黄铜小牌，编号：A16-025。',
+    '牌子下面的刻痕很新：「下一站，镜厅。」',
+  ],
+}
+
 export const DIAL_WRONG_TEXTS: string[] = [
   '铜盘发出一声干涩的错响，随即弹回原位。门后传来一声极轻的叹息。',
   '机关卡了一下，又松开了。——它还愿意给你一次机会。',

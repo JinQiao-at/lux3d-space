@@ -23,6 +23,7 @@ import {
 import { answerQuestion } from './agent.ts'
 import type { AgentCitation, AgentToolCall } from './agent.ts'
 import { askServerAgent } from './serverAgent.ts'
+import { fetchSaveFromServer, pushSaveToServer } from './serverSave.ts'
 import { playSound, setMasterVolume } from './audio.ts'
 
 export type Panel = 'none' | 'journal' | 'archive' | 'agent' | 'pause' | 'ending' | 'map' | 'memory'
@@ -103,6 +104,8 @@ export interface GameStore {
   saveNow: () => boolean
   exportSave: () => { filename: string; json: string }
   importSave: (raw: string) => boolean
+  /** 从 server /api/progress 恢复存档（A2）；返回 null=成功，字符串=失败原因。 */
+  restoreFromCloud: () => Promise<string | null>
   restart: () => void
   updateSettings: (settings: Partial<GameState['settings']>) => void
   askAgent: (question: string) => void
@@ -318,9 +321,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   saveNow: () => {
-    const saved = saveToStorage(get().game)
+    const game = get().game
+    const saved = saveToStorage(game)
     if (saved) set({ saveExists: true })
+    // 云端同步（A2，可选增强）：server 可达时顺带上传，失败静默——localStorage 始终是主存档
+    void pushSaveToServer(game)
     return saved
+  },
+
+  restoreFromCloud: async () => {
+    const state = await fetchSaveFromServer()
+    if (!state) return '云端没有可用存档（server 不可达或从未同步过）。'
+    get().loadGame(state, '已从云端恢复存档。')
+    return null
   },
 
   exportSave: () => {
