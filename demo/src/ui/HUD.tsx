@@ -34,11 +34,24 @@ export function HUD() {
   const dialText = dialProgressText(game)
   const exploring = !focus && panel === 'none'
 
+  // P1-A1 开发期 GL 性能角标（renderer.info 每秒轮询；生产构建不渲染）
+  useEffect(() => {
+    if (!import.meta.env.DEV) return
+    const el = document.getElementById('gl-profiler')
+    if (!el) return
+    const timer = setInterval(() => {
+      const info = (window as unknown as { __glInfo?: { render: { calls: number; triangles: number }; memory: { geometries: number; textures: number } } }).__glInfo
+      if (info) el.textContent = `DC ${info.render.calls} · Tris ${(info.render.triangles / 1000).toFixed(0)}k · Geo ${info.memory.geometries}`
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
   return (
     <>
       {/* 暗背景可读性：上下渐变 scrim，保证 HUD 不压在亮部上 */}
       <div className="hud-scrim hud-scrim-top" aria-hidden="true" />
       <div className="hud-scrim hud-scrim-bottom" aria-hidden="true" />
+      {import.meta.env.DEV && <div id="gl-profiler" className="gl-profiler" aria-hidden="true" />}
 
       <div className="hud hud-top-left">
         <div className="zone-name">

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { ZoneId } from '../game/types.ts'
@@ -19,6 +19,72 @@ const BOOK_COLORS = ['#6d2f2f', '#2f4a63', '#5a5330', '#3a3a44', '#704b2a', '#2d
 function pseudoRandom(seed: number): number {
   const value = Math.sin(seed * 127.1 + 311.7) * 43758.5453
   return value - Math.floor(value)
+}
+
+/** P1-A2：书架书 InstancedMesh 数据（45 本，伪随机与原逐 mesh 版完全同分布）。 */
+interface BookInstance {
+  x: number
+  y: number
+  z: number
+  tiltZ: number
+  scaleX: number
+  scaleY: number
+  scaleZ: number
+  color: string
+}
+
+const SHELF_YS = [0.1, 0.62, 1.14, 1.66, 2.18]
+
+function buildBookInstances(): BookInstance[] {
+  return SHELF_YS.flatMap((y, shelf) =>
+    Array.from({ length: 9 }, (_, index) => {
+      const seed = shelf * 17 + index * 3.7
+      const height = 0.26 + pseudoRandom(seed) * 0.12
+      const depth = 0.16 + pseudoRandom(seed + 1) * 0.08
+      return {
+        x: 0.34,
+        y: y + height / 2 + 0.03,
+        z: -1.45 + index * 0.33,
+        tiltZ: pseudoRandom(seed + 2) > 0.9 ? 0.14 : 0,
+        scaleX: depth,
+        scaleY: height,
+        scaleZ: 0.08 + pseudoRandom(seed + 3) * 0.08,
+        color: BOOK_COLORS[(shelf * 9 + index) % BOOK_COLORS.length],
+      }
+    }),
+  )
+}
+
+/** 45 本书合批：单 boxGeometry + 单 vertexColors 材质 + 逐实例矩阵/颜色（P1-A2，45 draw call → 1）。 */
+function BookshelfBooks() {
+  const ref = useRef<THREE.InstancedMesh>(null)
+  const books = useMemo(buildBookInstances, [])
+
+  useLayoutEffect(() => {
+    const mesh = ref.current
+    if (!mesh) return
+    const temp = new THREE.Object3D()
+    const color = new THREE.Color()
+    books.forEach((book, i) => {
+      temp.position.set(book.x, book.y, book.z)
+      temp.rotation.set(0, 0, book.tiltZ)
+      temp.scale.set(book.scaleX, book.scaleY, book.scaleZ)
+      temp.updateMatrix()
+      mesh.setMatrixAt(i, temp.matrix)
+      color.set(book.color)
+      mesh.setColorAt(i, color)
+    })
+    // 模板三坑：矩阵与颜色写入后必须置 needsUpdate，材质必须 vertexColors
+    mesh.instanceMatrix.needsUpdate = true
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
+  }, [books])
+
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, books.length]} frustumCulled>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial vertexColors roughness={0.85} />
+    </instancedMesh>
+  )
 }
 
 /** 书房陈设：书桌、日记、书架、壁炉、油画、落地镜、地板暗门。 */
@@ -134,23 +200,7 @@ function StudyProps() {
               <meshStandardMaterial color="#5c3f27" roughness={0.7} />
             </mesh>
           ))}
-          {[0.1, 0.62, 1.14, 1.66, 2.18].flatMap((y, shelf) =>
-            Array.from({ length: 9 }, (_, index) => {
-              const seed = shelf * 17 + index * 3.7
-              const height = 0.26 + pseudoRandom(seed) * 0.12
-              const depth = 0.16 + pseudoRandom(seed + 1) * 0.08
-              const offsetZ = -1.45 + index * 0.33
-              return (
-                <mesh key={`book-${shelf}-${index}`} position={[0.34, y + height / 2 + 0.03, offsetZ]} rotation={[0, 0, pseudoRandom(seed + 2) > 0.9 ? 0.14 : 0]}>
-                  <boxGeometry args={[depth, height, 0.08 + pseudoRandom(seed + 3) * 0.08]} />
-                  <meshStandardMaterial
-                    color={BOOK_COLORS[(shelf * 9 + index) % BOOK_COLORS.length]}
-                    roughness={0.85}
-                  />
-                </mesh>
-              )
-            }),
-          )}
+          <BookshelfBooks />
           {/* 第三层暗格（提灯取出后留下缝隙） */}
           <mesh position={[0.4, 1.18, 0.55]}>
             <boxGeometry args={[0.1, 0.32, 0.5]} />

@@ -127,8 +127,8 @@ export interface AssetModelProps {
  */
 export function AssetModel({ src, position = [0, 0, 0], rotationYDeg = 0, fitSize }: AssetModelProps) {
   // 第二个参数传 false：禁用 drei 的 Draco CDN 解码器，保持“零网络资产”。
-  // 若后续 pipeline 输出 Draco 压缩 GLB，请把解码器放到 public/draco/ 并改为传本地路径。
-  const gltf = useGLTF(src, false)
+  // P1-A3：第三参开启 Meshopt 解码——17 件 GLB 已做 meshopt 压缩（decoder 由 three 内置 wasm 提供，无网络请求）。
+  const gltf = useGLTF(src, false, true)
 
   const prepared = useMemo(() => {
     const sourceScene = gltf.scene

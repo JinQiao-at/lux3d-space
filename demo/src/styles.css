@@ -1953,3 +1953,18 @@ dt {
   font-size: 12px;
   padding: 2px 8px;
 }
+
+/* P1-A1 开发期 GL 性能角标（仅 DEV 渲染） */
+.gl-profiler {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index: 50;
+  font: 11px/1.4 monospace;
+  color: #9fe6a0;
+  background: rgba(10, 14, 10, 0.72);
+  border: 1px solid rgba(159, 230, 160, 0.25);
+  border-radius: 4px;
+  padding: 3px 8px;
+  pointer-events: none;
+}

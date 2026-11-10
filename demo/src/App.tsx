@@ -176,6 +176,11 @@ export default function App() {
           camera={{ fov: 72, near: 0.05, far: 120, position: [0, EYE_HEIGHT, 3.2] }}
           dpr={[1, 1.75]}
           gl={{ antialias: true, powerPreference: 'high-performance' }}
+          onCreated={({ gl }) => {
+            // P1-A1 开发期性能打点：renderer.info 挂全局，HUD 角标轮询显示（生产不渲染面板但打点保留）
+            const info = gl.info as unknown as { render: { calls: number; triangles: number }; memory: { geometries: number; textures: number } }
+            ;(window as unknown as { __glInfo?: unknown }).__glInfo = info
+          }}
         >
           <Suspense fallback={null}>
             <World />

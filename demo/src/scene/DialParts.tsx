@@ -28,7 +28,8 @@ interface PreparedBody {
 }
 
 function usePreparedBody(url: string): PreparedBody | null {
-  const gltf = useGLTF(url, false)
+  // P1-A3：Meshopt 解码开启（与 AssetModel 同步）
+  const gltf = useGLTF(url, false, true)
   return useMemo(() => {
     const source = gltf.scene
     if (!source || source.children.length === 0) return null

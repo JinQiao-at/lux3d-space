@@ -21,7 +21,7 @@ export function preloadRegisteredGlbs(): void {
   warmed = true
   for (const url of Object.values(ASSET_REGISTRY)) {
     try {
-      useGLTF.preload(url, false) // 与 AssetModel 一致：禁用 CDN Draco，保持零网络资产
+      useGLTF.preload(url, false, true) // 与 AssetModel 一致：禁 CDN Draco + 开 Meshopt 解码（P1-A3）
     } catch {
       // 预热失败静默：运行期 PropAsset 的 HEAD 探测/兜底仍会接管
     }
