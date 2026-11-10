@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-08T07:49:47.042Z",
+  "updatedAt": "2026-11-10T14:59:30.612Z",
   "tasks": [
     {
       "id": "T-001",
@@ -746,12 +746,154 @@
         {
           "at": "2026-11-08T05:29:59.070Z",
           "text": "push 复试 2 轮仍断（reset + connect timeout 21s）。本地现领先 origin/main 2 commits：8019d2f（修复）+ a9073b0（T-025 落板+交接单补全，刚提交）。交接单 handoffs/T-025.md 已补全，T-025 闭环。待网络恢复 git push 即可"
+        },
+        {
+          "at": "2026-11-09T09:58:58.095Z",
+          "text": "T-026 追加（issue #3 优化清单第 3 项）：LLM Agent 接入完成——glm-4-flash 免费档 function calling，7 工具 schema 直配，server 端真执行数据工具+视觉类转前端建议，三态降级验证全过"
         }
       ],
       "createdAt": "2026-11-08T04:35:25.025Z",
-      "updatedAt": "2026-11-08T05:29:59.071Z",
+      "updatedAt": "2026-11-09T09:58:58.096Z",
       "claimedAt": "2026-11-08T04:35:25.178Z",
       "doneAt": "2026-11-08T05:19:54.647Z"
+    },
+    {
+      "id": "T-026",
+      "title": "P1-A 性能：InstancedMesh 合批+Meshopt+Profiler",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 1,
+      "scope": [
+        "demo/src",
+        "demo/public/models"
+      ],
+      "acceptance": "DC<50 实测 43 ✓；17 件 GLB meshopt -56%；29/29 单测",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-10T14:59:29.855Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-10T14:59:30.045Z",
+          "text": "done: DC 43(<50) 实测；书架书 45→1 call；Meshopt 17/17 -56%（23.6→10.1MB）；useGLTF meshopt 解码三处同步；Profiler 角标 DEV 可见"
+        },
+        {
+          "at": "2026-11-10T14:59:30.610Z",
+          "text": "注意：会话内对话代号 T-026=LLM Agent 接入、T-027=JSON 剧本源与本板编号不同（本板 T-026=性能/T-027=剧情）。以本板为权威；LLM Agent 与 JSON 源工作已在 main 469432e 落地"
+        }
+      ],
+      "createdAt": "2026-11-10T14:58:40.562Z",
+      "updatedAt": "2026-11-10T14:59:30.612Z",
+      "claimedAt": "2026-11-10T14:59:29.852Z",
+      "doneAt": "2026-11-10T14:59:30.042Z"
+    },
+    {
+      "id": "T-027",
+      "title": "P1-B 剧情扩容：双结局+环境叙事 8 条+音频三层",
+      "status": "done",
+      "owner": "zcode",
+      "priority": 1,
+      "scope": [
+        "demo/src",
+        "demo/src/narrative"
+      ],
+      "acceptance": "32/32 单测；FLAG_KEYS 保持 9；零音频文件红线",
+      "blockedBy": [],
+      "notes": [
+        {
+          "at": "2026-11-10T14:59:30.236Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-10T14:59:30.425Z",
+          "text": "done: 双结局 blow/keep（complete 限定，自由旗标 FLAG_KEYS 保持 9）；ambientLines 8 条静默线索；音频三层+密室低吟 pad+blow 音色；32/32 单测；往返测试适配自由键清洗契约"
+        }
+      ],
+      "createdAt": "2026-11-10T14:58:40.712Z",
+      "updatedAt": "2026-11-10T14:59:30.425Z",
+      "claimedAt": "2026-11-10T14:59:30.234Z",
+      "doneAt": "2026-11-10T14:59:30.422Z"
+    },
+    {
+      "id": "T-028",
+      "title": "P2 拾取优化：three-mesh-bvh + 隐藏结局残页 3",
+      "status": "pending",
+      "owner": null,
+      "priority": 2,
+      "scope": [
+        "demo/src"
+      ],
+      "acceptance": "拾取延迟<5ms；残页集齐触发对话，不动 12 页主线计数",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-10T14:58:40.868Z",
+      "updatedAt": "2026-11-10T14:58:40.870Z"
+    },
+    {
+      "id": "T-029",
+      "title": "P3 Playtest 通关录屏+bug 清单归档",
+      "status": "pending",
+      "owner": null,
+      "priority": 2,
+      "scope": [
+        "demo",
+        "collab"
+      ],
+      "acceptance": "主线7+支线3+双结局全通录屏；findings 归档",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-10T14:58:41.030Z",
+      "updatedAt": "2026-11-10T14:58:41.033Z"
+    },
+    {
+      "id": "T-030",
+      "title": "P3 镜厅 3DGS 原型（A16-025 衔接）",
+      "status": "pending",
+      "owner": null,
+      "priority": 3,
+      "scope": [
+        "pipeline/world",
+        "demo/src/ui"
+      ],
+      "acceptance": "SpatialGen 生成镜厅 + MemoryPanel 模式复用",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-10T14:58:41.206Z",
+      "updatedAt": "2026-11-10T14:58:41.209Z"
+    },
+    {
+      "id": "T-031",
+      "title": "P3 Lux3D 资产三向审计",
+      "status": "pending",
+      "owner": null,
+      "priority": 3,
+      "scope": [
+        "pipeline/lux3d",
+        "demo/src/scene"
+      ],
+      "acceptance": "manifest/registry/实际加载三向对齐表",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-10T14:58:41.395Z",
+      "updatedAt": "2026-11-10T14:58:41.398Z"
+    },
+    {
+      "id": "T-032",
+      "title": "二期文档与技能沉淀：docs/15 路线图+references 手册",
+      "status": "pending",
+      "owner": null,
+      "priority": 2,
+      "scope": [
+        "docs",
+        ".agents",
+        "collab"
+      ],
+      "acceptance": "docs/15 + references/roadmap-optimization.md + SKILL.md 扩展交叉一致",
+      "blockedBy": [],
+      "notes": [],
+      "createdAt": "2026-11-10T14:58:41.585Z",
+      "updatedAt": "2026-11-10T14:58:41.587Z"
     }
   ]
 }

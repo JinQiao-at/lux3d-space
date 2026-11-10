@@ -98,6 +98,41 @@ async def get_agent_tools() -> str:
     return json.dumps(TOOLS, ensure_ascii=False)
 
 
+_BOARD_PATH = Path(__file__).resolve().parents[1] / "collab" / "board.json"
+_MANIFEST_PATH = Path(__file__).resolve().parents[1] / "pipeline" / "lux3d" / "assets-manifest.json"
+
+
+@mcp.tool()
+async def get_roadmap() -> str:
+    """读项目任务板（collab/board.json），返回全部任务的 id/标题/状态/优先级/scope——
+    外部 Agent 可据此领取（claim→done 流程见任务板工作流）或核对路线图。"""
+    data = json.loads(_BOARD_PATH.read_text(encoding="utf-8"))
+    return json.dumps(
+        [
+            {"id": t["id"], "title": t["title"], "status": t["status"],
+             "priority": t.get("priority"), "scope": t.get("scope", [])}
+            for t in data.get("tasks", [])
+        ],
+        ensure_ascii=False,
+    )
+
+
+@mcp.tool()
+async def list_assets() -> str:
+    """列出 Lux3D 生成管线 17 件资产清单（objectId/中文名/压缩前后体积/任务号/状态）。"""
+    data = json.loads(_MANIFEST_PATH.read_text(encoding="utf-8"))
+    assets = data.get("assets", [])
+    return json.dumps(
+        [
+            {"objectId": a.get("objectId"), "label": a.get("label"),
+             "glbBytes": a.get("glbBytes"), "glbRawBytes": a.get("glbRawBytes"),
+             "taskId": a.get("glbTaskId"), "status": a.get("status")}
+            for a in assets
+        ],
+        ensure_ascii=False,
+    )
+
+
 def _selftest() -> int:
     """不经 stdio 直接调用工具函数，验证检索与 Agent 全链。"""
 
@@ -111,8 +146,13 @@ def _selftest() -> int:
         assert ask["grounded"] and ask["citations"], f"agent 异常: {ask['answer'][:60]}"
         tools = json.loads(await get_agent_tools())
         assert len(tools) == 7, f"工具数异常: {len(tools)}"
+        roadmap = json.loads(await get_roadmap())
+        assert len(roadmap) >= 25, f"任务板异常: {len(roadmap)}"
+        assets = json.loads(await list_assets())
+        assert len(assets) == 17, f"资产清单异常: {len(assets)}"
         print(f"selftest OK: 17 条目 / 检索 top1={hits[0]['id']}({hits[0]['score']}) / "
-              f"agent grounded={ask['grounded']} / {len(tools)} 工具契约")
+              f"agent grounded={ask['grounded']} / {len(tools)} 工具契约 / "
+              f"roadmap {len(roadmap)} 任务 / assets {len(assets)} 件")
         return 0
 
     return asyncio.run(run())

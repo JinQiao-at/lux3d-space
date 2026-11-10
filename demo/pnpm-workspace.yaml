@@ -1,7 +1,9 @@
-﻿packages:
+packages:
   - '.'
 
 onlyBuiltDependencies:
   - esbuild
 strictDepBuilds: false
 dangerouslyAllowAllBuilds: false
+allowBuilds:
+  esbuild: set this to true or false

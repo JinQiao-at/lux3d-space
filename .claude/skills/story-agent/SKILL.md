@@ -103,6 +103,14 @@ description: 在 lux3d-space《提灯与暗门》里接入或模拟叙事 Agent 
 
 工具调用落到 store 的映射：`search_knowledge → searchKnowledge()`（demo/src/data/knowledge.ts）；`focus_object/highlight_object → focusCamera()/highlightObject()`；`show_narration → pushLog()`；`get_player_state/list_zone_objects` 纯读；`request_hint → dispatch({type:'request_hint', level})`。示例实现：`demo/src/game/agent.ts` 的 `answerQuestion`（本地规则引擎 stub，可直接替换为模型调用）。
 
+## 二期执行层（P1-B 已落地，roadmap T-026~T-032）
+
+- **双结局**：Action `blow_lantern`/`keep_lantern`（仅 complete 阶段；自由旗标 `ending_blow/ending_keep` 不进 FLAG_KEYS、不持久化）。文案在 narrative-content.json `endingVariants{kept,blew}`；UI 入口 EndingPanel 抉择区
+- **环境叙事**：`ambientLines`（objectId→一句话）——调查成功后一次性追加 narration（自由键 `ambient_seen_<objectId>` 会话内去重）；新增线索只改 JSON
+- **音频三层**：environment（rain/drip/pad）·sfx（playSound）·music（chamber 低吟 55/55.4Hz 拍频 pad）；`startChamberPad/stopChamberPad` 由 App 按 zone 起停
+- **Agent 回答契约新增**：`knowledgeBoundaries.unknownResponse`（narrative-agent.json）——检索零命中时代码层直接原话输出（0.02s，不依赖模型自觉）；system prompt 由同文件 persona/boundaries 拼装（python 侧 agent.py `_build_system_prompt` 同构实现）
+- 手册：`.agents/skills/lux3d-space/references/roadmap-optimization.md`；路线图：`docs/15-二期路线图.md`
+
 ## 深入阅读
 
 - 契约全文：`docs/10-故事技术栈定义.md` §L3-L4
