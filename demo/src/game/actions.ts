@@ -26,6 +26,8 @@ import {
   HINTS,
   JOURNAL_ENTRIES,
   OBJECT_SUCCESS,
+  AMBIENT_LINES,
+  ENDING_VARIANTS,
   TAPESTRY_HIDDEN_LINES,
   STAGE_META,
   USE_ITEM_WRONG_LINES,
@@ -423,6 +425,15 @@ export function applyAction(state: GameState, action: Action): ActionResult {
     case 'use': {
       const next = cloneState(state)
       const outcome = interact(next, action.objectId)
+      // P1-B 环境叙事：调查成功后一次性追加静默线索（自由键不持久化——每次会话可再触发）
+      if (outcome.ok) {
+        const ambientKey = `ambient_seen_${action.objectId}`
+        const ambient = AMBIENT_LINES[action.objectId]
+        if (ambient && !next.flags[ambientKey]) {
+          next.flags = { ...next.flags, [ambientKey]: true }
+          outcome.effects.push({ kind: 'narration', text: ambient })
+        }
+      }
       return { state: outcome.state, effects: outcome.effects, ok: outcome.ok }
     }
     case 'dial': {
@@ -472,6 +483,31 @@ export function applyAction(state: GameState, action: Action): ActionResult {
     }
     case 'reset': {
       return { state: createInitialState(), effects: [], ok: true }
+    }
+    case 'blow_lantern':
+    case 'keep_lantern': {
+      // P1-B 双结局：complete 阶段的最终选择。自由旗标（不进 FLAG_KEYS，不持久化——与
+      // tapestry_looked 同款约定）；文案走 ENDING_VARIANTS（narrative-content.json）。
+      const next = cloneState(state)
+      const effects: Effect[] = []
+      if (next.stage !== 'complete') {
+        narrate(effects, '还不是做这个决定的时候。')
+        effects.push({ kind: 'sound', sound: 'ui' })
+        return { state: next, effects, ok: false }
+      }
+      const blew = action.type === 'blow_lantern'
+      const flag = blew ? 'ending_blow' : 'ending_keep'
+      if (next.flags[flag]) {
+        narrate(effects, '这个选择你已经做过了。')
+        return { state: next, effects, ok: true }
+      }
+      next.flags = { ...next.flags, [flag]: true }
+      const variant = ENDING_VARIANTS[blew ? 'blew' : 'kept']
+      narrate(effects, `${variant.title}。`)
+      narrate(effects, variant.lines)
+      narrate(effects, variant.achievement)
+      effects.push({ kind: 'sound', sound: blew ? 'blow' : 'bell' })
+      return { state: next, effects, ok: true }
     }
     default: {
       return { state: cloneState(state), effects: [], ok: false }

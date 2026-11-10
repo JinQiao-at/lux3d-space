@@ -88,6 +88,7 @@ export type SoundName =
   | 'hint'
   | 'footstep'
   | 'bell'
+  | 'blow'
 
 export type Vec3 = [number, number, number]
 
@@ -208,6 +209,9 @@ export type Action =
   /** T-019：Zork 式物品使用谜题——把背包物品用在物件上（如黄铜钥匙×洗手台）。 */
   | { type: 'use_item_on'; objectId: string; itemId: string }
   | { type: 'toggle_lantern' }
+  /** P1-B 双结局：complete 阶段的最终选择（吹灭/守着提灯）。自由旗标，不进 FLAG_KEYS。 */
+  | { type: 'blow_lantern' }
+  | { type: 'keep_lantern' }
   | { type: 'enter_zone'; zoneId: ZoneId }
   | { type: 'request_hint'; level: 1 | 2 | 3 }
   | { type: 'tick'; seconds: number }

@@ -59,6 +59,15 @@ export interface EndingData {
 
 export const ENDING: EndingData = narrativeContent.ending
 
+/** P1-B 双结局变体：complete 阶段吹灯/守灯的分支文案（键：kept | blew）。 */
+export const ENDING_VARIANTS: Record<
+  string,
+  { key: string; flag: string; title: string; lines: string[]; achievement: string }
+> = narrativeContent.endingVariants
+
+/** P1-B 环境叙事：调查既有物件时一次性追加的静默线索（objectId → 一句话）。 */
+export const AMBIENT_LINES: Record<string, string> = narrativeContent.ambientLines
+
 export const ENDING_STATS_LABELS = narrativeContent.endingStatsLabels
 
 export const TITLE = narrativeContent.title

@@ -168,6 +168,11 @@ export function playSound(name: SoundName): void {
           tone(ctx, { type: 'sine', from: 588, start: t + offset, duration: 0.7, gain: 0.035 })
         }
         break
+      case 'blow':
+        // P1-B 双结局「吹灯」：气声（宽带噪声）+ 灯焰下滑音
+        noise(ctx, { start: t, duration: 0.5, gain: 0.14, frequency: 1200, type: 'bandpass' })
+        tone(ctx, { type: 'sine', from: 220, to: 40, start: t + 0.08, duration: 0.9, gain: 0.1 })
+        break
       case 'ui':
       default:
         tone(ctx, { type: 'sine', from: 880, start: t, duration: 0.06, gain: 0.04 })
@@ -250,5 +255,53 @@ export function stopDrip(): void {
   if (dripTimer) {
     clearInterval(dripTimer)
     dripTimer = null
+  }
+}
+
+// ===== P1-B 音频第三层「场景乐」：密室低吟 pad（失谐正弦对拍频 + 慢包络），进入密室启动 =====
+
+let padNodes: { oscA: OscillatorNode; oscB: OscillatorNode; gain: GainNode } | null = null
+
+/** 密室低吟：55Hz/55.4Hz 失谐正弦对，2s 淡入至 0.03——几乎不可闻但改变空间感。幂等。 */
+export function startChamberPad(): void {
+  const ctx = getContext()
+  if (!ctx || ctx.state === 'suspended' || padNodes) return
+  try {
+    const gain = ctx.createGain()
+    gain.gain.value = 0
+    gain.gain.setTargetAtTime(0.03, ctx.currentTime, 1.2)
+    const oscA = ctx.createOscillator()
+    oscA.type = 'sine'
+    oscA.frequency.value = 55
+    const oscB = ctx.createOscillator()
+    oscB.type = 'sine'
+    oscB.frequency.value = 55.4
+    oscA.connect(gain)
+    oscB.connect(gain)
+    gain.connect(master as GainNode)
+    oscA.start()
+    oscB.start()
+    padNodes = { oscA, oscB, gain }
+  } catch {
+    // 音频失败不影响玩法
+  }
+}
+
+export function stopChamberPad(): void {
+  if (!padNodes) return
+  const nodes = padNodes
+  padNodes = null
+  try {
+    nodes.gain.gain.setTargetAtTime(0, getContext()!.currentTime, 0.6)
+    setTimeout(() => {
+      try {
+        nodes.oscA.stop()
+        nodes.oscB.stop()
+      } catch {
+        /* 已停止 */
+      }
+    }, 1800)
+  } catch {
+    /* 忽略 */
   }
 }

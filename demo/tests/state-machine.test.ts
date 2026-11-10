@@ -289,7 +289,21 @@ test('存档序列化往返 + 坏存档兜底', () => {
   const json = serializeSave(state)
   const parsed = parseSave(json)
   assert.ok(parsed)
-  assert.deepEqual(parsed, state)
+  // P1-B 起 state 可能携带自由键（ambient_seen_*/tapestry_looked/ending_*）——存档白名单
+  // 按 FLAG_KEYS 清洗是既定契约（见「支线旗标不得进 FLAG_KEYS」测试），故主线键逐一
+  // 深比较、自由键单独断言被清洗，测试语义（主线存档往返无损）不变。
+  assert.ok(parsed)
+  for (const key of FLAG_KEYS) {
+    assert.equal(parsed.flags[key], state.flags[key], `主线 flag ${key} 往返应无损`)
+  }
+  const freeKeys = Object.keys(state.flags).filter((key) => !FLAG_KEYS.includes(key as never))
+  for (const key of freeKeys) {
+    assert.equal(parsed.flags[key], undefined, `自由键 ${key} 应被存档白名单清洗`)
+  }
+  // flags 之外的存档字段逐一深比较（settings/position 等必须无损）
+  const { flags: _parsedFlags, ...parsedRest } = parsed
+  const { flags: _stateFlags, ...stateRest } = state
+  assert.deepEqual(parsedRest, stateRest)
 
   // 坏 JSON
   assert.equal(parseSave('{not-json'), null)
@@ -316,8 +330,19 @@ test('存档序列化往返 + 坏存档兜底', () => {
     },
   }
   assert.equal(saveToStorage(state, storage), true)
-  assert.deepEqual(loadFromStorage(storage), state)
-  assert.equal(loadFromStorage(storage)?.stage, state.stage)
+  const loaded = loadFromStorage(storage)
+  assert.ok(loaded)
+  // 同上：主线键逐一比较 + 自由键应被清洗（P1-B 契约）
+  for (const key of FLAG_KEYS) {
+    assert.equal(loaded.flags[key], state.flags[key], `主线 flag ${key} 往返应无损`)
+  }
+  for (const key of Object.keys(state.flags).filter((k) => !FLAG_KEYS.includes(k as never))) {
+    assert.equal(loaded.flags[key], undefined, `自由键 ${key} 应被清洗`)
+  }
+  const { flags: _lf, ...loadedRest } = loaded
+  const { flags: _sf, ...stateRest2 } = state
+  assert.deepEqual(loadedRest, stateRest2)
+  assert.equal(loaded.stage, state.stage)
 })
 
 test('存档辅助：时长格式与导出文件名', () => {
@@ -772,6 +797,53 @@ test('T-019 地图与收集进度：zone 契约完整、visited 单调、日记�
   for (const zoneId of ZONE_IDS) {
     assert.ok((ZONE_FIRST_ENTER_LINES[zoneId] ?? []).length >= 3, `${zoneId} 首访文案应 ≥3 行`)
   }
+})
+
+test('P1-B 双结局：仅 complete 阶段可选择，keep/blow 各置自由旗标且文案不同', () => {
+  const states = playHappyPath()
+  const chamber = states[7] // zone_chamber
+  const complete = states[8] // afterPedestal：stage=complete
+  assert.equal(complete.stage, 'complete')
+
+  // 非 complete 阶段拒绝
+  const early = applyAction(chamber, { type: 'blow_lantern' })
+  assert.equal(early.ok, false, '非 complete 阶段应拒绝双结局选择')
+
+  // keep 分支
+  const keep = applyAction(complete, { type: 'keep_lantern' })
+  assert.equal(keep.ok, true)
+  assert.equal(keep.state.flags.ending_keep, true)
+  const keepText = keep.effects.map((e) => (e.kind === 'narration' ? e.text : '')).join('\n')
+  assert.ok(keepText.includes('守灯'), 'keep 文案应含「守灯」')
+  assert.ok(!keep.state.flags.ending_blow, '不应误置 blow 旗标')
+
+  // blow 分支
+  const blow = applyAction(complete, { type: 'blow_lantern' })
+  assert.equal(blow.ok, true)
+  assert.equal(blow.state.flags.ending_blow, true)
+  const blowText = blow.effects.map((e) => (e.kind === 'narration' ? e.text : '')).join('\n')
+  assert.ok(blowText.includes('吹灯'), 'blow 文案应含「吹灯」')
+  assert.ok(!blow.state.flags.ending_keep, '不应误置 keep 旗标')
+  assert.notEqual(keepText, blowText, '双结局文案应不同')
+})
+
+test('P1-B 契约：双结局旗标走自由键，FLAG_KEYS 仍为 9（主线契约不变）', () => {
+  assert.ok(!FLAG_KEYS.includes('ending_keep' as never), 'ending_keep 不得进 FLAG_KEYS')
+  assert.ok(!FLAG_KEYS.includes('ending_blow' as never), 'ending_blow 不得进 FLAG_KEYS')
+  assert.equal(FLAG_KEYS.length, 9, '主线 flags 契约仍是 9 个')
+})
+
+test('P1-B 环境叙事：调查既有物件一次性追加静默线索，二刷不重复', () => {
+  const state = createInitialState()
+  const first = applyAction(state, { type: 'inspect', objectId: 'obj_study_desk' })
+  assert.equal(first.ok, true)
+  const firstText = first.effects.map((e) => (e.kind === 'narration' ? e.text : '')).join('\n')
+  assert.ok(firstText.includes('比你早到'), '首次调查应追加环境线索')
+  assert.equal(first.state.flags['ambient_seen_obj_study_desk'], true, '自由键应置位')
+
+  const second = applyAction(first.state, { type: 'inspect', objectId: 'obj_study_desk' })
+  const secondText = second.effects.map((e) => (e.kind === 'narration' ? e.text : '')).join('\n')
+  assert.ok(!secondText.includes('比你早到'), '二刷不应重复环境线索')
 })
 
 test('B2 挂毯背面硬物：首次 search 置自由旗标，再次 search 给出 A16-025 镜厅钩子', () => {

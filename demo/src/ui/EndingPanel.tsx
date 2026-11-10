@@ -1,14 +1,26 @@
-import { ENDING, ENDING_STATS_LABELS, TITLE } from '../data/narrative.ts'
+import { useState } from 'react'
+import { ENDING, ENDING_VARIANTS, ENDING_STATS_LABELS, TITLE } from '../data/narrative.ts'
 import { formatPlayTime } from '../game/save.ts'
 import { ZONE_NAMES } from '../game/types.ts'
 import { useGameStore } from '../game/store.ts'
 import { requestScenePointerLock } from './dom.ts'
 
-/** 结局面板：结局文本 + 统计 + 重新开始。 */
+/** 结局面板：结局文本 + 双结局选择（P1-B）+ 统计 + 重新开始/记忆回廊。 */
 export function EndingPanel() {
   const game = useGameStore((state) => state.game)
   const closePanel = useGameStore((state) => state.closePanel)
   const restart = useGameStore((state) => state.restart)
+  const dispatch = useGameStore((state) => state.dispatch)
+  const [chosen, setChosen] = useState<'kept' | 'blew' | null>(
+    game.flags.ending_keep ? 'kept' : game.flags.ending_blow ? 'blew' : null,
+  )
+
+  const choose = (variant: 'kept' | 'blew') => {
+    dispatch({ type: variant === 'kept' ? 'keep_lantern' : 'blow_lantern' })
+    setChosen(variant)
+  }
+
+  const variant = chosen ? ENDING_VARIANTS[chosen] : null
 
   return (
     <div className="modal-overlay ending-overlay" role="dialog" aria-modal="true" aria-label="结局">
@@ -22,6 +34,33 @@ export function EndingPanel() {
           ))}
         </div>
         <p className="ending-achievement">{ENDING.achievement}</p>
+
+        {/* P1-B 双结局：未选择时给出最终抉择，选择后展示变体文案 */}
+        {!chosen && (
+          <div className="ending-choice">
+            <p className="muted">最后一件事：这盏灯，你打算怎么处理？</p>
+            <div className="ending-actions">
+              <button className="primary-button" onClick={() => choose('kept')}>
+                守着灯（keep_lantern）
+              </button>
+              <button className="ghost-button" onClick={() => choose('blew')}>
+                吹灭它（blow_lantern）
+              </button>
+            </div>
+          </div>
+        )}
+        {variant && (
+          <div className="ending-variant">
+            <h3 className="ending-variant-title">· {variant.title} ·</h3>
+            <div className="ending-lines">
+              {variant.lines.map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
+            <p className="ending-achievement">{variant.achievement}</p>
+          </div>
+        )}
+
         <dl className="ending-stats">
           <div>
             <dt>{ENDING_STATS_LABELS.playTime}</dt>

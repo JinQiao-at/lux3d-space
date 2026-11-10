@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import type { Action } from './game/types.ts'
 import { EYE_HEIGHT, OBJECTS } from './data/scene.ts'
 import { useGameStore } from './game/store.ts'
-import { ensureAudio, setMasterVolume, startRain, stopRain, startDrip, stopDrip } from './game/audio.ts'
+import { ensureAudio, setMasterVolume, startRain, stopRain, startDrip, stopDrip, startChamberPad, stopChamberPad } from './game/audio.ts'
 import { World } from './scene/World.tsx'
 import { DarknessOverlay, HUD } from './ui/HUD.tsx'
 import { ClickHint, NarrationLog } from './ui/Overlays.tsx'
@@ -126,12 +126,16 @@ export default function App() {
     if (zone === 'zone_study') {
       startRain()
       stopDrip()
+      stopChamberPad()
     } else if (zone === 'zone_basement') {
       stopRain()
       startDrip()
+      stopChamberPad()
     } else {
+      // 密室（zone_chamber）：低吟 pad 起，雨声/滴水全停
       stopRain()
       stopDrip()
+      startChamberPad()
     }
   }, [started, panel, zone])
 

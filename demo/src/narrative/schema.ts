@@ -47,6 +47,21 @@ export const NarrativeContentSchema = z
         achievement: z.string().default(''),
       })
       .default({ title: '灯还在亮', subtitle: '', lines: [], achievement: '' }),
+    // P1-B 双结局变体（keep_lantern / blow_lantern）
+    endingVariants: z
+      .record(
+        z.string(),
+        z.object({
+          key: z.string(),
+          flag: z.string(),
+          title: z.string(),
+          lines: z.array(z.string()),
+          achievement: z.string(),
+        }),
+      )
+      .default({}),
+    // P1-B 环境叙事：调查既有物件时一次性追加的静默线索（$note 会被 passthrough 保留）
+    ambientLines: z.record(z.string(), z.string()).default({}),
     // （保持原位）
     endingStatsLabels: z
       .object({ playTime: z.string(), hints: z.string(), zones: z.string(), journal: z.string() })
