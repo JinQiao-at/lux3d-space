@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-10T14:59:30.612Z",
+  "updatedAt": "2026-11-10T15:03:44.607Z",
   "tasks": [
     {
       "id": "T-001",
@@ -881,8 +881,8 @@
     {
       "id": "T-032",
       "title": "二期文档与技能沉淀：docs/15 路线图+references 手册",
-      "status": "pending",
-      "owner": null,
+      "status": "done",
+      "owner": "zcode",
       "priority": 2,
       "scope": [
         "docs",
@@ -891,9 +891,20 @@
       ],
       "acceptance": "docs/15 + references/roadmap-optimization.md + SKILL.md 扩展交叉一致",
       "blockedBy": [],
-      "notes": [],
+      "notes": [
+        {
+          "at": "2026-11-10T15:03:44.394Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-10T15:03:44.607Z",
+          "text": "done: docs/15 路线图归档+references/roadmap-optimization.md 手册+SKILL.md 二期执行层+MCP 6 工具（get_roadmap/list_assets）+board T-026~032 全录"
+        }
+      ],
       "createdAt": "2026-11-10T14:58:41.585Z",
-      "updatedAt": "2026-11-10T14:58:41.587Z"
+      "updatedAt": "2026-11-10T15:03:44.607Z",
+      "claimedAt": "2026-11-10T15:03:44.392Z",
+      "doneAt": "2026-11-10T15:03:44.604Z"
     }
   ]
 }
