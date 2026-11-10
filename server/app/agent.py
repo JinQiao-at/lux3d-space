@@ -82,12 +82,61 @@ TOOLS: list[dict] = [
     },
 ]
 
-SYSTEM_PROMPT = """你是 DSH 叙事空间的档案管理员。只依据检索到的知识条目回答，不要编造。
+_FALLBACK_SYSTEM_PROMPT = """你是 DSH 叙事空间的档案管理员。只依据检索到的知识条目回答，不要编造。
 规则：
 1. 知识类结论后用 [条目 id] 标注来源，id 只能是检索结果里的知识条目 id（kb_ 开头），工具调用不标注；无检索命中时明确回答“档案中没有这条记录”。
 2. 你只能调用白名单工具；不得修改游戏状态、道具或剧情进度。
 3. 回答控制在 3 句话内；需要引导玩家时建议 focus_object / highlight_object。
 4. 不剧透 spoilerLevel 高于玩家当前进度的内容。"""
+
+
+def _load_agent_script() -> dict:
+    """T-027：读 narrative-agent.json（唯一剧本源）；文件缺失/损坏返回 {}，全部走内置回退文案。"""
+    import json as _json
+    from pathlib import Path as _Path
+
+    path = _Path(__file__).resolve().parents[2] / "demo" / "src" / "narrative" / "narrative-agent.json"
+    try:
+        return _json.loads(path.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001 —— 剧本缺失不让服务起不来
+        return {}
+
+
+_AGENT_SCRIPT = _load_agent_script()
+
+
+def _build_system_prompt() -> str:
+    """按 demo/src/narrative/promptBuilder.ts 同构规则拼 system prompt；
+    顺序：红线 → 人设 → 边界 → 记忆 → 场景 → 玩家态（后两段由请求期 player_state 提供，
+    此处为静态段）。剧本字段缺失时回退 _FALLBACK_SYSTEM_PROMPT 原文案。"""
+    persona = _AGENT_SCRIPT.get("persona") or {}
+    boundaries = _AGENT_SCRIPT.get("knowledgeBoundaries") or {}
+    role = persona.get("role") or "DSH 叙事空间的档案管理员"
+    rules = boundaries.get("rules") or [
+        "知识类结论后用 [条目 id] 标注来源，id 只能是检索结果里的知识条目 id（kb_ 开头），工具调用不标注；无检索命中时明确回答“档案中没有这条记录”。",
+        "你只能调用白名单工具；不得修改游戏状态、道具或剧情进度。",
+        "回答控制在 3 句话内；需要引导玩家时建议 focus_object / highlight_object。",
+        "不剧透 spoilerLevel 高于玩家当前进度的内容。",
+    ]
+    entry_ids = _AGENT_SCRIPT.get("knowledgeEntryIds") or []
+    lines = [f"你是{role}。只依据检索到的知识条目回答，不要编造。"]
+    tone = persona.get("tone")
+    if tone:
+        lines.append(f"人设：{role}。语气：{tone}。")
+    style = persona.get("responseStyle")
+    if style:
+        lines.append(f"回答风格：{style}。")
+    lines.append("知识边界（规则）：")
+    lines.extend(f"- {rule}" for rule in rules)
+    unknown = boundaries.get("unknownResponse")
+    if unknown:
+        lines.append(f"无命中时的固定回答（原话输出）：「{unknown}」")
+    if entry_ids:
+        lines.append(f"记忆（档案条目 id 清单，共 {len(entry_ids)} 条）：{'、'.join(entry_ids)}")
+    return "\n".join(lines)
+
+
+SYSTEM_PROMPT = _build_system_prompt() or _FALLBACK_SYSTEM_PROMPT
 
 
 def _fallback_answer(req: AgentAskRequest, citations: list[AgentCitation]) -> str:
@@ -119,8 +168,15 @@ async def answer_question(req: AgentAskRequest, retriever: Retriever) -> AgentAs
             suggestions.append(ToolSuggestion(name="focus_object", arguments={"objectId": top.object_id, "cameraId": top.camera_id or ""}))
     suggestions.append(ToolSuggestion(name="search_knowledge", arguments={"query": req.question, "limit": 3}))
 
-    # LLM 模式优先（配 LLM_API_KEY 生效）；失败/未配静默降级模板拼装
-    llm_response = await _llm_reply(req, retriever)
+    # unknown 判定放代码层（T-027，不依赖模型自觉）：检索零命中直接走模板拒答，
+    # 不进 LLM（省时且保证 unknownResponse 原话输出）。
+    if not citations:
+        fallback = _fallback_answer(req, [])
+        if _llm_config() is not None:
+            fallback = ( _AGENT_SCRIPT.get("knowledgeBoundaries") or {}).get("unknownResponse") or fallback
+        return AgentAskResponse(answer=fallback, citations=[], suggested_tools=suggestions, grounded=False)
+
+    llm_response = await _llm_reply(req, retriever, hits)
     if llm_response is not None:
         return llm_response
 
@@ -138,9 +194,27 @@ async def answer_question(req: AgentAskRequest, retriever: Retriever) -> AgentAs
 _LLM_TIMEOUT_S = 20
 _MAX_TOOL_ROUNDS = 2
 # server 端可真执行的只读数据工具；其余（focus/highlight/show_narration/request_hint）
-# 的调用意图转为 suggestedTools，由前端本地执行（契约不变）。
+# 的调用意图转为 suggestedTools 由前端执行（契约不变）。
 _SERVER_TOOLS = {"search_knowledge", "get_player_state", "list_zone_objects"}
 _FORWARD_TOOLS = {"focus_object", "highlight_object", "show_narration", "request_hint"}
+
+
+def _llm_params() -> dict:
+    """T-027：LLM 调用参数从 narrative-agent.json llm 块读；缺失/类型篡改回退现值（400/20/2 轮）。"""
+    llm = _AGENT_SCRIPT.get("llm") or {}
+
+    def _num(value: object, default: float, cast: type = float) -> float:
+        try:
+            return cast(value)  # type: ignore[arg-type]
+        except (TypeError, ValueError):
+            return default
+
+    return {
+        "temperature": _num(llm.get("temperature", 0.3), 0.3),
+        "max_tokens": int(_num(llm.get("maxTokens", 400), 400, int)),
+        "timeout": int(_num(llm.get("timeoutS", _LLM_TIMEOUT_S), _LLM_TIMEOUT_S, int)),
+        "max_tool_rounds": int(_num(llm.get("maxToolRounds", _MAX_TOOL_ROUNDS), _MAX_TOOL_ROUNDS, int)),
+    }
 
 
 def _llm_config() -> dict[str, str] | None:
@@ -193,8 +267,10 @@ async def _execute_server_tool(name: str, args: dict, req: AgentAskRequest, retr
     return None
 
 
-async def _llm_reply(req: AgentAskRequest, retriever: Retriever) -> AgentAskResponse | None:
-    """LLM function calling 主循环；任何失败返回 None 由调用方降级，绝不让请求 500。"""
+async def _llm_reply(req: AgentAskRequest, retriever: Retriever, hits=None) -> AgentAskResponse | None:
+    """LLM function calling 主循环；任何失败返回 None 由调用方降级，绝不让请求 500。
+
+    T-027：检索命中（hits）注入 user 消息——模型只依据命中条目回答，不再凭记忆段 id 凭空编造。"""
     import json as _json
     import logging
 
@@ -217,20 +293,41 @@ async def _llm_reply(req: AgentAskRequest, retriever: Retriever) -> AgentAskResp
         for tool in TOOLS
     ]
 
+    # T-027 输入段（对齐 promptBuilder.ts buildInput）：问题 + 检索命中条目全文
+    if hits:
+        hit_lines = "\n".join(
+            f"- [{h.entry.id}]《{h.entry.title}》：{h.entry.content}" for h in hits
+        )
+        user_content = f"玩家输入：「{req.question}」\n检索命中条目（回答只能依据这些内容）：\n{hit_lines}"
+    else:
+        user_content = f"玩家输入：「{req.question}」\n检索命中条目：无。"
+
     messages: list[dict] = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": req.question},
+        {"role": "user", "content": user_content},
     ]
-    seen_citations: dict[str, AgentCitation] = {}
+    seen_citations: dict[str, AgentCitation] = {
+        h.entry.id: AgentCitation(
+            id=h.entry.id, title=h.entry.title, sources=h.entry.sources, confidence=h.entry.confidence
+        )
+        for h in (hits or [])
+    }
     forward_suggestions: list[ToolSuggestion] = []
+    params = _llm_params()
 
     try:
-        async with httpx.AsyncClient(timeout=_LLM_TIMEOUT_S) as client:
-            for _round in range(_MAX_TOOL_ROUNDS + 1):
+        async with httpx.AsyncClient(timeout=params["timeout"]) as client:
+            for _round in range(params["max_tool_rounds"] + 1):
                 resp = await client.post(
                     cfg["url"],
                     headers={"Content-Type": "application/json", "Authorization": f"Bearer {cfg['key']}"},
-                    json={"model": cfg["model"], "messages": messages, "tools": tools_payload, "max_tokens": 400},
+                    json={
+                        "model": cfg["model"],
+                        "messages": messages,
+                        "tools": tools_payload,
+                        "max_tokens": params["max_tokens"],
+                        "temperature": params["temperature"],
+                    },
                 )
                 resp.raise_for_status()
                 message = resp.json()["choices"][0]["message"]
