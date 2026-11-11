@@ -28,6 +28,9 @@ import {
   OBJECT_SUCCESS,
   AMBIENT_LINES,
   ENDING_VARIANTS,
+  HIDDEN_PAGES,
+  HIDDEN_PAGE_FLAGS,
+  HIDDEN_PAGES_ASSEMBLY,
   TAPESTRY_HIDDEN_LINES,
   STAGE_META,
   USE_ITEM_WRONG_LINES,
@@ -432,6 +435,31 @@ export function applyAction(state: GameState, action: Action): ActionResult {
         if (ambient && !next.flags[ambientKey]) {
           next.flags = { ...next.flags, [ambientKey]: true }
           outcome.effects.push({ kind: 'narration', text: ambient })
+        }
+        // T-028 隐藏结局：二次调查同一物件触发残页（自由键 hidden_page_*）
+        const page = HIDDEN_PAGES[action.objectId]
+        if (page) {
+          const firstVisitKey = `searched_once_${action.objectId}`
+          if (!next.flags[firstVisitKey]) {
+            next.flags = { ...next.flags, [firstVisitKey]: true }
+          } else if (!next.flags[page.flag]) {
+            next.flags = { ...next.flags, [page.flag]: true }
+            narrate(outcome.effects, page.prompt)
+            narrate(outcome.effects, page.lines)
+            outcome.effects.push({ kind: 'sound', sound: 'hint' })
+          }
+        }
+        // 集齐判定独立于残页发放：三页全在手、且本次调查尚未触发过 → 守灯人低语（一次性）
+        if (
+          HIDDEN_PAGE_FLAGS.length > 0 &&
+          HIDDEN_PAGE_FLAGS.every((key) => next.flags[key]) &&
+          !next.flags.hidden_assembly_done
+        ) {
+          next.flags = { ...next.flags, hidden_assembly_done: true }
+          narrate(outcome.effects, HIDDEN_PAGES_ASSEMBLY.prompt)
+          narrate(outcome.effects, HIDDEN_PAGES_ASSEMBLY.lines)
+          narrate(outcome.effects, HIDDEN_PAGES_ASSEMBLY.achievement)
+          outcome.effects.push({ kind: 'sound', sound: 'bell' })
         }
       }
       return { state: outcome.state, effects: outcome.effects, ok: outcome.ok }

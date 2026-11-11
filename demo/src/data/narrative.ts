@@ -68,6 +68,20 @@ export const ENDING_VARIANTS: Record<
 /** P1-B 环境叙事：调查既有物件时一次性追加的静默线索（objectId → 一句话）。 */
 export const AMBIENT_LINES: Record<string, string> = narrativeContent.ambientLines
 
+export interface HiddenPage {
+  flag: string
+  prompt: string
+  lines: string[]
+  pageLabel: string
+}
+
+/** T-028 隐藏结局：残页三段调查（objectId → 页数据）与集齐触发语。 */
+export const HIDDEN_PAGES: Record<string, HiddenPage> = narrativeContent.hiddenPages.pages
+export const HIDDEN_PAGES_ASSEMBLY: { prompt: string; lines: string[]; achievement: string } =
+  narrativeContent.hiddenPages.assembly
+/** 集齐所需的残页旗标清单（由 JSON 推导）。 */
+export const HIDDEN_PAGE_FLAGS: string[] = Object.values(HIDDEN_PAGES).map((page) => page.flag)
+
 export const ENDING_STATS_LABELS = narrativeContent.endingStatsLabels
 
 export const TITLE = narrativeContent.title

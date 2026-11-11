@@ -846,6 +846,33 @@ test('P1-B 环境叙事：调查既有物件一次性追加静默线索，二刷
   assert.ok(!secondText.includes('比你早到'), '二刷不应重复环境线索')
 })
 
+test('T-028 隐藏结局：二次调查得残页一，集齐三页触发守灯人低语', () => {
+  const state = createInitialState()
+  // 首次 search：只置 searched_once，无残页
+  const first = applyAction(state, { type: 'search', objectId: 'obj_study_painting' })
+  assert.ok(!first.state.flags['hidden_page_painting'], '首次 search 不应得残页')
+  // 二次 search：得残页一
+  const second = applyAction(first.state, { type: 'search', objectId: 'obj_study_painting' })
+  assert.equal(second.state.flags['hidden_page_painting'], true)
+  const secondText = second.effects.map((e) => (e.kind === 'narration' ? e.text : '')).join('\n')
+  assert.ok(secondText.includes('残页 · 一') || secondText.includes('一页对折的纸'), '二次 search 应给残页文案')
+
+  // 直接置另外两页（自由键），再调查一次任意对象触发集齐判定
+  const withTwoMore = {
+    ...second.state,
+    flags: { ...second.state.flags, hidden_page_shower: true, hidden_page_basin: true },
+  }
+  const third = applyAction(withTwoMore, { type: 'inspect', objectId: 'obj_study_desk' })
+  const thirdText = third.effects.map((e) => (e.kind === 'narration' ? e.text : '')).join('\n')
+  assert.ok(thirdText.includes('守灯人没有留下名字') || thirdText.includes('A16-025'), '集齐应触发低语文案')
+})
+
+test('T-028 契约：残页与 searched_once 旗标走自由键，FLAG_KEYS 仍为 9', () => {
+  assert.ok(!FLAG_KEYS.includes('hidden_page_painting' as never), '残页旗标不得进 FLAG_KEYS')
+  assert.ok(!FLAG_KEYS.includes('searched_once_obj_study_painting' as never), 'searched_once 不得进 FLAG_KEYS')
+  assert.equal(FLAG_KEYS.length, 9, '主线 flags 契约仍是 9 个')
+})
+
 test('B2 挂毯背面硬物：首次 search 置自由旗标，再次 search 给出 A16-025 镜厅钩子', () => {
   const states = playHappyPath()
   const chamber = states[7] // afterSecretDoor：已进密室

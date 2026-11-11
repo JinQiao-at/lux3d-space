@@ -26,6 +26,7 @@ const MINIMAL_CONTENT: NarrativeContent = {
   ending: { title: '灯还在亮', subtitle: '', lines: ['（剧本数据缺失——这是最小兜底结局。）'], achievement: '' },
   endingVariants: {},
   ambientLines: {},
+  hiddenPages: { pages: {}, assembly: { prompt: '', lines: [], achievement: '' } },
   endingStatsLabels: { playTime: '探索用时', hints: '使用提示', zones: '抵达区域', journal: '日记条目' },
   title: '提灯与暗门',
   titleEn: 'The Lantern and the Hidden Door',

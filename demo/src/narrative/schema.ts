@@ -62,6 +62,25 @@ export const NarrativeContentSchema = z
       .default({}),
     // P1-B 环境叙事：调查既有物件时一次性追加的静默线索（$note 会被 passthrough 保留）
     ambientLines: z.record(z.string(), z.string()).default({}),
+    // T-028 隐藏结局：残页三段调查 + 集齐触发守灯人低语
+    hiddenPages: z
+      .object({
+        pages: z
+          .record(
+            z.string(),
+            z.object({
+              flag: z.string(),
+              prompt: z.string(),
+              lines: z.array(z.string()),
+              pageLabel: z.string(),
+            }),
+          )
+          .default({}),
+        assembly: z
+          .object({ prompt: z.string().default(''), lines: z.array(z.string()).default([]), achievement: z.string().default('') })
+          .default({ prompt: '', lines: [], achievement: '' }),
+      })
+      .default({ pages: {}, assembly: { prompt: '', lines: [], achievement: '' } }),
     // （保持原位）
     endingStatsLabels: z
       .object({ playTime: z.string(), hints: z.string(), zones: z.string(), journal: z.string() })
