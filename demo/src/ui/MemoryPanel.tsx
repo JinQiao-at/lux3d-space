@@ -15,22 +15,24 @@ const PANO_URL = './splats/memory-corridor-pano.jpg'
 // T-025 B2 两轮规则结论：SPZ 在 mkkellogg 0.4.7 加载成功（4.7MB/21ms）但渲染黑屏（解码器实现缺，
 // 枚举有但分发链不走）——回退 PLY 18.4MB（渲染已验证）。SPZ 待官方 viewer 或 0.4.8+ 再启用。
 const SPLAT_URL = './splats/memory-corridor-hd.ply'
+// T-030 镜厅原型：SpatialGen 生成（worldId 3FO4K4RMR6F9），A16-025「下一站，镜厅」的续作视觉接口
+const MIRROR_PANO_URL = './splats/mirror-hall-pano.jpg'
 
-/** 3DGS 实时点云为实验模式（黑屏排查中）；默认全景图，按钮可切换供 DSH/Owner 验收。 */
+/** 3DGS 实时点云为实验模式；默认全景图，按钮可切换；镜厅预览复用同一拖动环视逻辑。 */
 
 export function MemoryPanel() {
   const setPanel = useGameStore((state) => state.setPanel)
   const canvasHost = useRef<HTMLDivElement>(null)
   const panoRef = useRef<HTMLImageElement>(null)
-  const [mode, setMode] = useState<'pano' | 'splat'>('pano')
+  const [mode, setMode] = useState<'pano' | 'splat' | 'mirror'>('pano')
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [errorMessage, setErrorMessage] = useState('')
   const offset = useRef({ x: 50, y: 50 })
   const dragging = useRef<{ x: number; y: number } | null>(null)
 
-  // 全景环视：指针拖动改变背景定位（百分比）
+  // 全景环视：指针拖动改变背景定位（百分比；记忆回廊与镜厅共用）
   useEffect(() => {
-    if (mode !== 'pano') return
+    if (mode === 'splat') return
     const el = panoRef.current
     if (!el) return
     const apply = () => {
@@ -147,21 +149,11 @@ export function MemoryPanel() {
       subtitle="这是上一任屋主留下的空间记忆 · 拖动画面环视"
       onClose={() => setPanel('ending')}
     >
-      {mode === 'pano' ? (
-        <div className="memory-stage">
-          <img
-            ref={panoRef}
-            className="memory-pano"
-            src={PANO_URL}
-            alt="上一任屋主留下的空间记忆全景"
-            draggable={false}
-          />
-        </div>
-      ) : (
+      {mode === 'splat' ? (
         <div className="memory-stage" ref={canvasHost} aria-label="3DGS 场景">
           {status !== 'error' && status !== 'ready' && (
             <div className="memory-status">
-              <p className="muted">正在浮现空间记忆…（实验模式，PLY 已验证可渲染，加载约 18MB）</p>
+              <p className="muted">正在浮现空间记忆…（实验模式，PLY 已验证可渲染，加载约 5MB）</p>
             </div>
           )}
           {status === 'error' && (
@@ -170,11 +162,38 @@ export function MemoryPanel() {
             </div>
           )}
         </div>
+      ) : (
+        <div className="memory-stage">
+          <img
+            ref={panoRef}
+            className="memory-pano"
+            src={mode === 'mirror' ? MIRROR_PANO_URL : PANO_URL}
+            alt={mode === 'mirror' ? '镜厅全景（A16-025 下一站原型）' : '上一任屋主留下的空间记忆全景'}
+            draggable={false}
+          />
+          {mode === 'mirror' && <p className="muted memory-mirror-note">镜厅原型 · A16-025（续作视觉接口）</p>}
+        </div>
       )}
       <p className="muted memory-foot">
         A16-025 · 下一站，镜厅。（SpatialGen 3DGS · Aholo）
         {' '}·{' '}
-        {mode === 'pano' ? (
+        {mode !== 'splat' && (
+          <button
+            className="ghost-button memory-experiment"
+            onClick={() => {
+              setStatus('loading')
+              setMode(mode === 'pano' ? 'mirror' : 'pano')
+            }}
+          >
+            {mode === 'pano' ? '镜厅预览（下一站原型）' : '返回记忆回廊全景'}
+          </button>
+        )}
+        {mode !== 'splat' && ' · '}
+        {mode === 'splat' ? (
+          <button className="ghost-button memory-experiment" onClick={() => setMode('pano')}>
+            返回全景
+          </button>
+        ) : (
           <button
             className="ghost-button memory-experiment"
             onClick={() => {
@@ -183,13 +202,6 @@ export function MemoryPanel() {
             }}
           >
             实验模式：3DGS 点云
-          </button>
-        ) : (
-          <button
-            className="ghost-button memory-experiment"
-            onClick={() => setMode('pano')}
-          >
-            返回全景
           </button>
         )}
       </p>

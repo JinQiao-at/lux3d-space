@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T04:27:54.567Z",
+  "updatedAt": "2026-11-11T08:59:43.354Z",
   "tasks": [
     {
       "id": "T-001",
@@ -844,8 +844,8 @@
     {
       "id": "T-029",
       "title": "P3 Playtest 通关录屏+bug 清单归档",
-      "status": "pending",
-      "owner": null,
+      "status": "done",
+      "owner": "zcode",
       "priority": 2,
       "scope": [
         "demo",
@@ -853,15 +853,26 @@
       ],
       "acceptance": "主线7+支线3+双结局全通录屏；findings 归档",
       "blockedBy": [],
-      "notes": [],
+      "notes": [
+        {
+          "at": "2026-11-11T08:41:44.902Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-11T08:59:43.218Z",
+          "text": "done: 浏览器 __store 钩子全链 Playtest：19/19 主线+支线+双结局+残页+集齐全过 bugs=[]；边缘语义确认（暗处被拦不计残页次数，补单测 35th）；录屏归人类 T-004（渲染负载限制，逻辑证据=断言清单）。归档 docs/findings/2026-11-11-playtest.md"
+        }
+      ],
       "createdAt": "2026-11-10T14:58:41.030Z",
-      "updatedAt": "2026-11-10T14:58:41.033Z"
+      "updatedAt": "2026-11-11T08:59:43.218Z",
+      "claimedAt": "2026-11-11T08:41:44.901Z",
+      "doneAt": "2026-11-11T08:59:43.216Z"
     },
     {
       "id": "T-030",
       "title": "P3 镜厅 3DGS 原型（A16-025 衔接）",
-      "status": "pending",
-      "owner": null,
+      "status": "done",
+      "owner": "zcode",
       "priority": 3,
       "scope": [
         "pipeline/world",
@@ -869,9 +880,20 @@
       ],
       "acceptance": "SpatialGen 生成镜厅 + MemoryPanel 模式复用",
       "blockedBy": [],
-      "notes": [],
+      "notes": [
+        {
+          "at": "2026-11-11T08:41:45.011Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-11T08:59:43.354Z",
+          "text": "done: SpatialGen 镜厅生成 SUCCEEDED（worldId 3FO4K4RMR6F9）；PLY 34.5→5.45MB（splat-transform -84%）+pano 落 public/splats/；MemoryPanel 第三模式「镜厅预览」复用拖动环视+A16-025 角注；浏览器实测按钮切换/pano imgLoaded/角注显示全过"
+        }
+      ],
       "createdAt": "2026-11-10T14:58:41.206Z",
-      "updatedAt": "2026-11-10T14:58:41.209Z"
+      "updatedAt": "2026-11-11T08:59:43.354Z",
+      "claimedAt": "2026-11-11T08:41:45.010Z",
+      "doneAt": "2026-11-11T08:59:43.352Z"
     },
     {
       "id": "T-031",

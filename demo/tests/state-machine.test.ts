@@ -867,6 +867,24 @@ test('T-028 隐藏结局：二次调查得残页一，集齐三页触发守灯�
   assert.ok(thirdText.includes('守灯人没有留下名字') || thirdText.includes('A16-025'), '集齐应触发低语文案')
 })
 
+test('T-028 残页三（basin）：被拦调查不计次数，带灯成功两次后给页（真实流程）', () => {
+  // 无灯状态：basin 首搜被拦（ok=false），不计入 searched_once
+  const dark = createInitialState()
+  const blocked = applyAction(dark, { type: 'search', objectId: 'obj_basement_basin' })
+  assert.equal(blocked.ok, false, '无灯搜 basin 应被拦')
+  assert.equal(blocked.state.flags['searched_once_obj_basement_basin'], undefined, '被拦调查不计次数')
+
+  // 带灯成功调查两次 → 残页三（用 playHappyPath 的 illuminate 阶段：带灯在地下室）
+  const lit = playHappyPath()[4]
+  const once = applyAction(lit, { type: 'search', objectId: 'obj_basement_basin' })
+  assert.equal(once.ok, true)
+  assert.ok(!once.state.flags['hidden_page_basin'], '成功首搜不给页')
+  const twice = applyAction(once.state, { type: 'search', objectId: 'obj_basement_basin' })
+  assert.equal(twice.state.flags['hidden_page_basin'], true, '成功二搜给残页三')
+  const twiceText = twice.effects.map((e) => (e.kind === 'narration' ? e.text : '')).join('\n')
+  assert.ok(twiceText.includes('残页 · 三') || twiceText.includes('排水缝'), '残页三文案正确')
+})
+
 test('T-028 契约：残页与 searched_once 旗标走自由键，FLAG_KEYS 仍为 9', () => {
   assert.ok(!FLAG_KEYS.includes('hidden_page_painting' as never), '残页旗标不得进 FLAG_KEYS')
   assert.ok(!FLAG_KEYS.includes('searched_once_obj_study_painting' as never), 'searched_once 不得进 FLAG_KEYS')

@@ -504,3 +504,8 @@ export function currentZoneObjects(game: GameState) {
 }
 
 export { newId as nextLogId }
+
+// T-029 Playtest 钩子：仅开发构建暴露 store（浏览器全链路 dispatch 测试用；生产不可达）
+if (import.meta.env.DEV) {
+  ;(window as unknown as { __store?: typeof useGameStore }).__store = useGameStore
+}
