@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-10T15:03:44.607Z",
+  "updatedAt": "2026-11-11T04:27:54.567Z",
   "tasks": [
     {
       "id": "T-001",
@@ -818,17 +818,28 @@
     {
       "id": "T-028",
       "title": "P2 拾取优化：three-mesh-bvh + 隐藏结局残页 3",
-      "status": "pending",
-      "owner": null,
+      "status": "done",
+      "owner": "zcode",
       "priority": 2,
       "scope": [
         "demo/src"
       ],
       "acceptance": "拾取延迟<5ms；残页集齐触发对话，不动 12 页主线计数",
       "blockedBy": [],
-      "notes": [],
+      "notes": [
+        {
+          "at": "2026-11-11T04:20:24.700Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-11T04:27:54.567Z",
+          "text": "done: BVH 引导层（acceleratedRaycast+幂等建树，World 按 zone 挂载）+隐藏结局三残页（二次调查发放+集齐低语一次性触发，自由键 FLAG_KEYS 保持 9）。34/34 单测，build 9.17s"
+        }
+      ],
       "createdAt": "2026-11-10T14:58:40.868Z",
-      "updatedAt": "2026-11-10T14:58:40.870Z"
+      "updatedAt": "2026-11-11T04:27:54.567Z",
+      "claimedAt": "2026-11-11T04:20:24.697Z",
+      "doneAt": "2026-11-11T04:27:54.565Z"
     },
     {
       "id": "T-029",
