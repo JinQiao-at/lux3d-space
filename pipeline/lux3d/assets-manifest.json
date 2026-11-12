@@ -1,7 +1,7 @@
 {
   "version": 1,
   "region": "cn",
-  "updatedAt": "2026-11-03T22:55:00+08:00",
+  "updatedAt": "2026-11-12T08:48:08Z",
   "defaults": {
     "imageModel": "G1-Turbo",
     "model3d": "G1",
@@ -32,7 +32,9 @@
       "glbTaskId": "4626048",
       "glbBytes": 1171564,
       "glbRawBytes": 10008904,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 527260,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_study_diary",
@@ -46,7 +48,10 @@
       "referenceTaskId": "4625608",
       "glbPath": "demo\\public\\models\\obj_study_diary.glb",
       "glbTaskId": "4625651",
-      "glbBytes": 10524120
+      "glbBytes": 10524120,
+      "glbMeshoptBytes": 516072,
+      "meshoptAt": "2026-11-12T08:48:08Z",
+      "meshoptNote": "跳过首轮 gltf-transform 优化，直接 Meshopt 压缩原始输出"
     },
     {
       "objectId": "obj_study_bookshelf",
@@ -62,7 +67,9 @@
       "glbTaskId": "4639880",
       "glbBytes": 1312344,
       "glbRawBytes": 8845164,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 568956,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_study_fireplace",
@@ -78,7 +85,9 @@
       "glbTaskId": "4640182",
       "glbBytes": 1578160,
       "glbRawBytes": 10063868,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 705064,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_study_floor_door",
@@ -94,7 +103,9 @@
       "glbTaskId": "4656460",
       "glbBytes": 1063372,
       "glbRawBytes": 9098108,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 469924,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_study_mirror",
@@ -110,7 +121,9 @@
       "glbTaskId": "4656462",
       "glbBytes": 1170688,
       "glbRawBytes": 11148140,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 531128,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_study_painting",
@@ -126,7 +139,9 @@
       "glbTaskId": "4656463",
       "glbBytes": 1692096,
       "glbRawBytes": 11017340,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 759136,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_basement_stairs",
@@ -142,7 +157,9 @@
       "glbTaskId": "4656760",
       "glbBytes": 1311568,
       "glbRawBytes": 10005444,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 598584,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_basement_shower",
@@ -158,7 +175,9 @@
       "glbTaskId": "4640189",
       "glbBytes": 1111120,
       "glbRawBytes": 9099908,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 509376,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_basement_mural",
@@ -174,7 +193,9 @@
       "glbTaskId": "4639882",
       "glbBytes": 1173152,
       "glbRawBytes": 10166372,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 542336,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_basement_basin",
@@ -190,7 +211,9 @@
       "glbTaskId": "4656855",
       "glbBytes": 1612284,
       "glbRawBytes": 10080936,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 712744,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_basement_dial_1",
@@ -206,7 +229,9 @@
       "glbTaskId": "4656859",
       "glbBytes": 1071144,
       "glbRawBytes": 9513772,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 462768,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_basement_dial_2",
@@ -222,7 +247,9 @@
       "glbTaskId": "4657061",
       "glbBytes": 1134084,
       "glbRawBytes": 9993848,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 514812,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_basement_dial_3",
@@ -238,7 +265,9 @@
       "glbTaskId": "4657079",
       "glbBytes": 1230564,
       "glbRawBytes": 10020964,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 559276,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_basement_secret_door",
@@ -254,7 +283,9 @@
       "glbTaskId": "4640007",
       "glbBytes": 1794500,
       "glbRawBytes": 10710648,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 793656,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_chamber_pedestal",
@@ -270,7 +301,9 @@
       "glbTaskId": "4640016",
       "glbBytes": 3375236,
       "glbRawBytes": 13502152,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 1264316,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     },
     {
       "objectId": "obj_chamber_tapestry",
@@ -286,7 +319,9 @@
       "glbTaskId": "4657113",
       "glbBytes": 1188164,
       "glbRawBytes": 11444780,
-      "glbOptimized": true
+      "glbOptimized": true,
+      "glbMeshoptBytes": 571064,
+      "meshoptAt": "2026-11-12T08:48:08Z"
     }
   ]
 }

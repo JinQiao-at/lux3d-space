@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T08:59:43.354Z",
+  "updatedAt": "2026-11-12T08:48:24.977Z",
   "tasks": [
     {
       "id": "T-001",
@@ -898,8 +898,8 @@
     {
       "id": "T-031",
       "title": "P3 Lux3D 资产三向审计",
-      "status": "pending",
-      "owner": null,
+      "status": "done",
+      "owner": "zcode",
       "priority": 3,
       "scope": [
         "pipeline/lux3d",
@@ -907,9 +907,20 @@
       ],
       "acceptance": "manifest/registry/实际加载三向对齐表",
       "blockedBy": [],
-      "notes": [],
+      "notes": [
+        {
+          "at": "2026-11-12T08:47:12.020Z",
+          "text": "claim by zcode"
+        },
+        {
+          "at": "2026-11-12T08:48:24.977Z",
+          "text": "done: 三向审计 17/17 闭环：taskId 全非空↔17 GLB 实际文件↔registry 17 路径，孤项=0 悬空=0；唯一异常=manifest 体积列滞后于 Meshopt 二压→追加 glbMeshoptBytes/meshoptAt 字段补录（diary 带 meshoptNote 跳首压说明）。审计表 17 行见 handoff"
+        }
+      ],
       "createdAt": "2026-11-10T14:58:41.395Z",
-      "updatedAt": "2026-11-10T14:58:41.398Z"
+      "updatedAt": "2026-11-12T08:48:24.977Z",
+      "claimedAt": "2026-11-12T08:47:12.018Z",
+      "doneAt": "2026-11-12T08:48:24.975Z"
     },
     {
       "id": "T-032",

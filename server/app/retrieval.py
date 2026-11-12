@@ -38,6 +38,8 @@ def _tokens(text: str) -> list[str]:
 
 # 低于该分值视为"无效命中"（宁可拒答也不编造）
 MIN_SCORE = 1.5
+# 向量余弦拒答线（PgVectorRetriever 专用）：与词法分量纲不同，实测校准见 T-031 handoff
+MIN_VECTOR_SCORE = 0.55
 
 
 @dataclass
@@ -136,7 +138,14 @@ class PgVectorRetriever:
                     self._query_params(req, vector=vector),
                 )
                 rows = await cur.fetchall()
-        return [SearchHit(entry=self._row_to_entry(row), score=round(float(row[-1]), 4)) for row in rows]
+        # T-028 语义拒答阈值：向量余弦分 ∈[0,1]，量纲与词法分（1.5+）不同。
+        # 实测校准：语义改述「一盏照亮黑暗的旧提灯」top1=0.7154，无关问题「玻尔」=0.4865 → 取 0.55 分界。
+        hits = [
+            SearchHit(entry=self._row_to_entry(row), score=round(float(row[-1]), 4))
+            for row in rows
+            if float(row[-1]) >= MIN_VECTOR_SCORE
+        ]
+        return hits
 
     @staticmethod
     def _query_params(req: SearchRequest, **extra: object) -> dict[str, object]:

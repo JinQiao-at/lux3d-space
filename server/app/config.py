@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     llm_api_url: str = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
     llm_model: str = "glm-4-flash"
     llm_api_key: str = ""
+    # 语义检索 embedding（S4，2026-11-12 激活）：智谱 embedding-3，dimensions 对齐 schema vector(1024)
+    embedding_api_url: str = "https://open.bigmodel.cn/api/paas/v4/embeddings"
+    embedding_model: str = "embedding-3"
+    embedding_api_key: str = ""
 
     @property
     def use_pg(self) -> bool:

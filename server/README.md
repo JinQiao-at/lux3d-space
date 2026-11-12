@@ -48,6 +48,11 @@ EMBEDDING_API_KEY=sk-xxx
 未配置 embedding 时，pg 模式检索自动降级为**库内词法检索**（与 mock 同一套打分/拒答逻辑，不再 500）；
 配置后即走向量检索。
 
+**S4 已激活（2026-11-12）**：智谱 embedding-3（dimensions=1024，对齐 schema vector(1024)）。
+`python scripts/seed_pg.py --embed` 逐条回填向量（当前 17/17）；向量检索带语义拒答线
+MIN_VECTOR_SCORE=0.55（实测校准：语义改述 top1=0.7154 通过、无关问题 0.4865 被滤）——
+改述句如「一盏能照亮黑暗的旧灯有什么故事」可语义命中 kb_lantern_origin。
+
 ## LLM Agent（T-026，issue #3 清单项）
 
 `server/.env`（gitignored）配置后，`/api/agent/ask` 的回答由 LLM function calling 生成：
