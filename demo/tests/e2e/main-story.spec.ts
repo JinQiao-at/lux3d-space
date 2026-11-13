@@ -69,6 +69,10 @@ test.describe('主线 7 步', () => {
     await act(page, { type: 'search', objectId: 'obj_study_bookshelf' })
     await act(page, { type: 'toggle_lantern' })
     await act(page, { type: 'use', objectId: 'obj_study_floor_door' })
+    // 三线索 inspect（转盘 conditions 依赖 clue_symbols/clue_basin——同测试 ⑤ 的护栏链）
+    await act(page, { type: 'inspect', objectId: 'obj_basement_shower' })
+    await act(page, { type: 'inspect', objectId: 'obj_basement_mural' })
+    await act(page, { type: 'inspect', objectId: 'obj_basement_basin' })
     await act(page, { type: 'dial', objectId: 'obj_basement_dial_3' })
     await act(page, { type: 'dial', objectId: 'obj_basement_dial_1' })
     await act(page, { type: 'dial', objectId: 'obj_basement_dial_2' })

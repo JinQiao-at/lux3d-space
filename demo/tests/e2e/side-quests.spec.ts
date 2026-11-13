@@ -15,6 +15,8 @@ test.describe('支线 3 条 + 隐藏残页', () => {
   })
 
   test('支线 2：钥匙 × 洗手台暗格（需带灯到地下室）', async ({ page }) => {
+    // 一搜得提灯，二搜才得黄铜钥匙（书架暗格两次掉落，见 actions.ts obj_study_bookshelf）
+    await act(page, { type: 'search', objectId: 'obj_study_bookshelf' })
     await act(page, { type: 'search', objectId: 'obj_study_bookshelf' })
     await act(page, { type: 'toggle_lantern' })
     await act(page, { type: 'use', objectId: 'obj_study_floor_door' })
