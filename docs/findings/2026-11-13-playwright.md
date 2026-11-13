@@ -39,3 +39,19 @@
 ## 逻辑层背书
 
 node:test 35/35 全绿（含 playHappyPath 主线全链）——E2E 失败两项为浏览器运行时环境差异，非游戏逻辑 bug。
+
+---
+
+# 全剧情通关跑（webapp-testing skill + Python Playwright）· 2026-11-13
+
+方法：`with_server.py` 模式（vite 6120）+ sync_playwright（Edge channel+WebGL 三参数，headless）
++ `__store` 钩子逐步 dispatch + 每步截图（headless 指针锁不可用会自动弹暂停菜单——截图前 setPanel('none') 修正）。
+
+**结果：28 步全通过、bugs=[]、8 项契约断言全过**（complete/blow/all_pages/assembly_once/tapestry/basin_secret/keep 不并存/FLAG_KEYS 主线 9 键无污染）。
+
+截图证据（demo/docs/screenshots/playthrough/，28 张 + result.json）：
+- 02 开场书房 → 03 提灯 → 04 钥匙 → 09 地下室（3D 场景+字幕+HUD+Profiler 全渲染铁证）
+- 18-20 转盘三拨 → 21 暗门 → 24 密室结局（Lux3D 挂毯 GLB+石台+灯环+A16-024 toast）
+- 25 吹灯 → 26 记忆回廊全景 → **27 镜厅预览**（SpatialGen 全景+A16-025 角注——钩子落地）
+
+结论：整个故事情节（主线 7+支线 3+残页 3+集齐+双结局+钩子进镜厅）在真实浏览器渲染层完整跑通。
