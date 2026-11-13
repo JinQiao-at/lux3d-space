@@ -505,7 +505,26 @@ export function currentZoneObjects(game: GameState) {
 
 export { newId as nextLogId }
 
-// T-029 Playtest 钩子：仅开发构建暴露 store（浏览器全链路 dispatch 测试用；生产不可达）
+// T-029/T-033 Playtest 钩子：仅开发构建暴露 store 与受控动作入口（浏览器 E2E 用；生产不可达）
 if (import.meta.env.DEV) {
+  const playtestState = () => {
+    const state = useGameStore.getState()
+    return {
+      started: state.started,
+      panel: state.panel,
+      stage: state.game.stage,
+      zone: state.game.zone,
+      lanternLit: state.game.lanternLit,
+      flags: { ...state.game.flags },
+      inventory: [...state.game.inventory],
+      journalCount: state.game.journal.length,
+      logTail: state.log.slice(-2).map((line) => line.text),
+    }
+  }
   ;(window as unknown as { __store?: typeof useGameStore }).__store = useGameStore
+  ;(window as unknown as { getPlaytestState?: typeof playtestState }).getPlaytestState = playtestState
+  ;(window as unknown as { applyAction?: unknown }).applyAction = (action: Parameters<GameStore['dispatch']>[0]) => {
+    useGameStore.getState().dispatch(action)
+    return playtestState()
+  }
 }
