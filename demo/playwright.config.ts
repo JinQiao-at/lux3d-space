@@ -19,7 +19,19 @@ export default defineConfig({
     video: 'retain-on-failure',
     launchOptions: {
       channel: 'msedge',
-      args: ['--use-angle=default', '--enable-webgl', '--ignore-gpu-blocklist'],
+      args: [
+        '--use-angle=default',
+        '--enable-webgl',
+        '--ignore-gpu-blocklist',
+        // DNS 污染期防绕过：禁用浏览器内置异步解析器/Secure DNS（HTTPS RR 劫持源），强制系统解析
+        '--disable-async-dns',
+        // 污染层可能劫持 UDP/QUIC 到错误节点：禁 HTTP/3，强制 h2 over TCP
+        '--disable-quic',
+        // DNS 污染期可选映射：PLAYWRIGHT_HOST_MAP="host=ip,host2=ip2"（如 github.io→185.199.109.153）
+        ...(process.env.PLAYWRIGHT_HOST_MAP
+          ? [`--host-resolver-rules=${process.env.PLAYWRIGHT_HOST_MAP.split(',').map((m) => m.replace('=', ' ')).join(',')}`]
+          : []),
+      ],
     },
   },
   webServer: {

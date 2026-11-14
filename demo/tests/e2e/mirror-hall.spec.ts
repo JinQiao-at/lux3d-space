@@ -12,7 +12,8 @@ test.describe('钩子 A16-025 → 镜厅', () => {
     expect(gl).toBe(true)
   })
 
-  test('complete 后进入记忆回廊 → 镜厅预览加载', async ({ page }) => {
+  test('complete 后进入记忆回廊 → 镜厅预览加载（dev 专用，走 DEV 钩子）', async ({ page }) => {
+    test.skip(!!process.env.PLAYWRIGHT_PROD, '生产构建不含 DEV 钩子——UI 层此链由 dev 全量 E2E 背书')
     await startGame(page)
     // 快进到 complete
     await act(page, { type: 'read', objectId: 'obj_study_diary' })
@@ -47,5 +48,16 @@ test.describe('钩子 A16-025 → 镜厅', () => {
     // 钩子状态仍在密室/终局（镜厅是预览层不改变剧情）
     const state = await getState(page)
     expect(['chamber', 'complete']).toContain(state.stage)
+  })
+
+  test('生产可达性冒烟：页面 + 3D 资产（GLB/PLY/镜厅 pano）全链 200（无钩子依赖）', async ({ page }) => {
+    await page.goto('/')
+    await page.waitForLoadState('domcontentloaded')
+    await expect(page).toHaveTitle(/提灯与暗门/)
+    // 三类核心资产在当前部署域可达（相对当前 origin，本地=dev/生产=Pages 均适用）
+    for (const asset of ['models/obj_study_desk.glb', 'splats/memory-corridor-hd.ply', 'splats/mirror-hall-pano.jpg']) {
+      const resp = await page.request.get(asset)
+      expect(resp.status(), asset).toBe(200)
+    }
   })
 })

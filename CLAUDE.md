@@ -20,6 +20,8 @@ Aholo 黑客松 3D 叙事解谜游戏：Lux3D 生成资产 → Three.js/R3F 渲�
 
 ## 常用命令（在 demo/ 下）
 
+生产/备用访问：**https://jinqiao-at.github.io/lux3d-space/**（GitHub Pages 主）/ https://lux3d-lantern-demo.vercel.app（Vercel 备）；本机 DNS 污染期用 PLAYWRIGHT_HOST_MAP="jinqiao-at.github.io=185.199.109.153"（Edge 指纹劫持仍 404 时以 curl 为准）。
+
 ```bash
 pnpm build                # tsc --noEmit + vite build（门禁）
 pnpm test                 # node:test 单测 35 个（护栏）

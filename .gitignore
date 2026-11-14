@@ -20,3 +20,7 @@ server/pip-unpack-*/
 
 # pip 安装临时目录残留（server/）
 server/pip-*/
+
+# Playwright 本地产物
+demo/playwright-report/
+demo/test-results/
