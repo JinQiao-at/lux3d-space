@@ -49,10 +49,11 @@ function NarrationLine({ line }: { line: LogLine }) {
   )
 }
 
-/** 底部滚动叙事日志（Zork 式逐行描写 + 逐行淡入/打字机 reveal）。 */
+/** 底部居中叙事气泡（用户模板样式：12vh 处半透明黑底单条 + serif + 打字机 reveal）。
+ * aria-live 容器保留（E2E/读屏依赖）；历史多条仍可在日记面板查阅。 */
 export function NarrationLog() {
   const log = useGameStore((state) => state.log)
-  const visible = log.slice(-5)
+  const visible = log.slice(-1)
   if (visible.length === 0) return null
   return (
     <div className="narration-log" aria-live="polite">
@@ -63,16 +64,15 @@ export function NarrationLog() {
   )
 }
 
-/** 未锁定指针时的“点击进入漫游”提示（不拦截点击，让点击落到 canvas 上）。 */
+/** 漫游键位提示（T-034：无指针锁后常显轻提示，不拦截点击）。 */
 export function ClickHint() {
   const started = useGameStore((state) => state.started)
-  const locked = useGameStore((state) => state.locked)
   const panel = useGameStore((state) => state.panel)
   const focus = useGameStore((state) => state.focus)
-  if (!started || locked || panel !== 'none' || focus) return null
+  if (!started || panel !== 'none' || focus) return null
   return (
     <div className="click-hint" aria-hidden="true">
-      点击画面进入漫游
+      点击画面调查 · Esc 暂停
       <span>{TITLE_EN}</span>
     </div>
   )

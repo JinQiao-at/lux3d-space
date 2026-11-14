@@ -1,7 +1,6 @@
 import { TITLE, TITLE_EN } from '../data/narrative.ts'
 import { ensureAudio } from '../game/audio.ts'
 import { useGameStore } from '../game/store.ts'
-import { requestScenePointerLock } from './dom.ts'
 
 /** 首屏：标题 + 开始探索/继续 + 操作说明。 */
 export function TitleScreen() {
@@ -13,7 +12,6 @@ export function TitleScreen() {
   const startNew = () => {
     ensureAudio()
     beginNewGame()
-    requestScenePointerLock()
   }
 
   const startContinue = () => {
@@ -22,7 +20,6 @@ export function TitleScreen() {
       pushLog('没有找到可用存档，开始新的探索。', 'system')
       beginNewGame()
     }
-    requestScenePointerLock()
   }
 
   return (
@@ -61,7 +58,7 @@ export function TitleScreen() {
             </li>
           </ul>
           <p className="muted">
-            点击画面锁定鼠标开始漫游。所有场景、音效均为程序化生成，不加载任何网络资产。
+            点击画面开始漫游（光标常显，无需锁定）。所有场景、音效均为程序化生成，不加载任何网络资产。
           </p>
         </div>
       </div>

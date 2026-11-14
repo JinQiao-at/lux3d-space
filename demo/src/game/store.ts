@@ -225,9 +225,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   setPanel: (panel) => {
-    if (panel !== 'none' && typeof document !== 'undefined' && document.pointerLockElement) {
-      document.exitPointerLock()
-    }
     set({ panel, interaction: panel === 'none' ? get().interaction : null })
   },
 

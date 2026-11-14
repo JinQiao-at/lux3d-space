@@ -3,7 +3,6 @@ import { ENDING, ENDING_VARIANTS, ENDING_STATS_LABELS, TITLE } from '../data/nar
 import { formatPlayTime } from '../game/save.ts'
 import { ZONE_NAMES } from '../game/types.ts'
 import { useGameStore } from '../game/store.ts'
-import { requestScenePointerLock } from './dom.ts'
 
 /** 结局面板：结局文本 + 双结局选择（P1-B）+ 统计 + 重新开始/记忆回廊。 */
 export function EndingPanel() {
@@ -84,7 +83,6 @@ export function EndingPanel() {
             className="primary-button"
             onClick={() => {
               restart()
-              requestScenePointerLock()
             }}
           >
             重新开始
@@ -99,7 +97,6 @@ export function EndingPanel() {
             className="ghost-button"
             onClick={() => {
               closePanel()
-              requestScenePointerLock()
             }}
           >
             继续探索密室

@@ -3,7 +3,7 @@ import type { ChangeEvent } from 'react'
 import { formatPlayTime } from '../game/save.ts'
 import { useGameStore } from '../game/store.ts'
 import { Modal } from './Modal.tsx'
-import { downloadTextFile, readTextFile, requestScenePointerLock } from './dom.ts'
+import { downloadTextFile, readTextFile } from './dom.ts'
 
 /** 暂停菜单：继续 / 存档导出导入 / 设置 / 重新开始。 */
 export function PauseMenu() {
@@ -63,7 +63,6 @@ export function PauseMenu() {
       subtitle="游戏已暂停 · 存档保存在 localStorage['lux3d.save.v1']"
       onClose={() => {
         closePanel()
-        requestScenePointerLock()
       }}
     >
       <section className="panel-section">
@@ -72,7 +71,6 @@ export function PauseMenu() {
             className="primary-button"
             onClick={() => {
               closePanel()
-              requestScenePointerLock()
             }}
           >
             继续探索
@@ -91,7 +89,6 @@ export function PauseMenu() {
             onClick={() => {
               if (window.confirm('重新开始会清空当前进度与本地存档，确定吗？')) {
                 restart()
-                requestScenePointerLock()
               }
             }}
           >

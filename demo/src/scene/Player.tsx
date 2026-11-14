@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { PointerLockControls } from '@react-three/drei'
 import * as THREE from 'three'
 import type { Vec3 } from '../game/types.ts'
 import { EYE_HEIGHT, ZONES, zoneObjects } from '../data/scene.ts'
@@ -11,9 +10,16 @@ import { playSound } from '../game/audio.ts'
 const WALK_SPEED = 2.15
 const RUN_SPEED = 3.7
 
-/** 第一人称玩家：drei PointerLockControls（鼠标视角）+ WASD + AABB 碰撞 + 交互候选检测。 */
+/** 第一人称玩家：普通鼠标环视（无指针锁）+ WASD + AABB 碰撞 + 交互候选检测。
+ *
+ * T-034 交互重构：PointerLockControls → document mousemove 差值环视。
+ * - 无需指针锁定（生产 iframe/权限场景不失败），光标常显 crosshair；
+ * - sensitivity 直连设置滑条（系数语义不变）；
+ * - 环视仅在可漫游状态生效（started && !focus && panel==='none'）。
+ */
 export function Player() {
   const camera = useThree((state) => state.camera)
+  const gl = useThree((state) => state.gl)
   const zone = useGameStore((state) => state.game.zone)
   const started = useGameStore((state) => state.started)
   const focus = useGameStore((state) => state.focus)
@@ -25,6 +31,7 @@ export function Player() {
   const interactionAcc = useRef(0)
   const poseAcc = useRef(0)
   const footstepAcc = useRef(0)
+  const lastMouse = useRef<{ x: number; y: number } | null>(null)
 
   const setInteraction = useGameStore((state) => state.setInteraction)
   const syncPose = useGameStore((state) => state.syncPose)
@@ -38,6 +45,40 @@ export function Player() {
     interactionAcc.current = 0
     poseAcc.current = 0
   }, [camera, zone])
+
+  // 普通鼠标环视：mousemove 位置差值（无指针锁）；仅可漫游状态生效
+  useEffect(() => {
+    const canLook = () => {
+      const state = useGameStore.getState()
+      return state.started && !state.focus && state.panel === 'none'
+    }
+    const onMove = (event: MouseEvent) => {
+      if (!canLook()) {
+        lastMouse.current = null
+        return
+      }
+      const last = lastMouse.current
+      lastMouse.current = { x: event.clientX, y: event.clientY }
+      if (!last) return
+      const dx = event.clientX - last.x
+      const dy = event.clientY - last.y
+      const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ')
+      euler.y -= dx * 0.0022 * sensitivity
+      euler.x -= dy * 0.0022 * sensitivity
+      euler.x = Math.max(-1.45, Math.min(1.45, euler.x))
+      camera.quaternion.setFromEuler(euler)
+    }
+    const onLeave = () => {
+      lastMouse.current = null
+    }
+    const el = gl.domElement
+    el.addEventListener('mousemove', onMove)
+    el.addEventListener('mouseleave', onLeave)
+    return () => {
+      el.removeEventListener('mousemove', onMove)
+      el.removeEventListener('mouseleave', onLeave)
+    }
+  }, [camera, gl, sensitivity])
 
   useEffect(() => {
     const isTyping = (target: EventTarget | null): boolean => {
@@ -74,7 +115,7 @@ export function Player() {
 
   useFrame((_, delta) => {
     const state = useGameStore.getState()
-    const canExplore = state.started && !state.focus && state.panel === 'none' && state.locked
+    const canExplore = state.started && !state.focus && state.panel === 'none'
     if (!canExplore) return
 
     const dt = Math.min(0.05, delta)
@@ -133,14 +174,6 @@ export function Player() {
 
   return (
     <>
-      <PointerLockControls
-        selector="#scene-root"
-        makeDefault
-        enabled={Boolean(started && !focus && panel === 'none')}
-        pointerSpeed={sensitivity}
-        onLock={() => useGameStore.getState().setLocked(true)}
-        onUnlock={() => useGameStore.getState().setLocked(false)}
-      />
       <HandLantern />
     </>
   )

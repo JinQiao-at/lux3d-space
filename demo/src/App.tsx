@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { Suspense, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
+import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing'
 import type { Action } from './game/types.ts'
 import { EYE_HEIGHT, OBJECTS } from './data/scene.ts'
 import { useGameStore } from './game/store.ts'
@@ -18,7 +19,6 @@ import { EndingPanel } from './ui/EndingPanel.tsx'
 import { MapPanel } from './ui/MapPanel.tsx'
 import { MemoryPanel } from './ui/MemoryPanel.tsx'
 import { FocusCard } from './ui/FocusCard.tsx'
-import { requestScenePointerLock } from './ui/dom.ts'
 import { preloadRegisteredGlbs } from './scene/preloadGlbs.ts'
 
 export default function App() {
@@ -47,7 +47,6 @@ export default function App() {
         if (store.panel === 'ending') return
         if (store.panel !== 'none') {
           store.closePanel()
-          requestScenePointerLock()
           return
         }
         if (store.focus) {
@@ -181,6 +180,7 @@ export default function App() {
         <Canvas
           camera={{ fov: 72, near: 0.05, far: 120, position: [0, EYE_HEIGHT, 3.2] }}
           dpr={[1, 1.75]}
+          shadows
           gl={{
             antialias: true,
             powerPreference: 'high-performance',
@@ -197,6 +197,10 @@ export default function App() {
           <Suspense fallback={null}>
             <World />
           </Suspense>
+          <EffectComposer>
+            <Bloom intensity={0.6} luminanceThreshold={0.75} mipmapBlur />
+            <Vignette eskil={false} offset={0.25} darkness={0.75} />
+          </EffectComposer>
         </Canvas>
       </div>
 

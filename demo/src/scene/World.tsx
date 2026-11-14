@@ -5,6 +5,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { RoomShell } from './RoomShell.tsx'
 import { ZoneProps, HighlightHalo } from './Props.tsx'
 import { ZoneLighting } from './Lighting.tsx'
+import { StudyRoomLighting } from './StudyRoomLighting.tsx'
 import { Player } from './Player.tsx'
 import { CameraRig } from './CameraRig.tsx'
 import { useGameStore } from '../game/store.ts'
@@ -45,6 +46,7 @@ export function World() {
       <color attach="background" args={[background]} />
       <fog attach="fog" args={[background, fogNear, fogFar]} />
       <ZoneLighting zone={zone} />
+      {zone === 'zone_study' && <StudyRoomLighting />}
       <RoomShell zone={zone} />
       <ZoneProps zone={zone} />
       <HighlightHalo />

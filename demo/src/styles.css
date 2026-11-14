@@ -1293,21 +1293,29 @@ dt {
 }
 
 /* ---------- 叙事日志：左对齐 + 首行缩进 + 逐行淡入 + 打字机 caret ---------- */
+/* T-034 叙事气泡（用户模板）：底部 12vh 居中单条 + 半透明黑底 + serif + clamp 响应式字号 */
 .narration-log {
-  text-align: left;
-  padding: 0 16px;
-  align-items: stretch;
+  position: fixed;
+  z-index: 11;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(70vw, 760px);
+  padding: 10px 22px;
+  background: rgba(10, 8, 6, 0.62);
+  border-radius: 4px;
+  text-align: center;
+  pointer-events: none;
 }
 
 .narration-line {
   margin: 0;
-  font-family: var(--font-serif-zh);
-  font-size: 15.5px;
-  line-height: 1.9;
-  letter-spacing: 0.022em;
-  color: #e2dacb;
-  text-shadow: 0 1px 4px #000, 0 0 18px rgba(0, 0, 0, 0.9);
-  text-indent: 2em;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', var(--font-serif-zh), serif;
+  font-size: clamp(14px, 1.6vw, 19px);
+  line-height: 1.8;
+  letter-spacing: 0.03em;
+  color: #e8dcc8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   opacity: 0;
   animation: narration-reveal 0.42s ease forwards;
 }
@@ -2028,4 +2036,9 @@ dt {
   font-size: 10px;
   letter-spacing: 0.4em;
   color: rgba(230, 214, 180, 0.34);
+}
+
+/* T-034 普通光标模式：无指针锁，canvas 十字准星常显 */
+#scene-root canvas {
+  cursor: crosshair;
 }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { OPENING_LINES, STAGE_META } from '../data/narrative.ts'
 import { useGameStore } from '../game/store.ts'
-import { requestScenePointerLock } from './dom.ts'
 
 /**
  * Zork 式开场字幕浮层（任务：3D 叙事呈现相似化）——OPENING_LINES 居中逐行浮现于
@@ -22,7 +21,6 @@ export function OpeningOverlay() {
   const dismiss = () => {
     if (dismissed) return
     setDismissed(true)
-    requestScenePointerLock()
   }
 
   // Esc/点击均可退出

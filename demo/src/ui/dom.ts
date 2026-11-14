@@ -1,28 +1,3 @@
-/** 指针锁定小工具：面板关闭后从用户手势里恢复漫游。 */
-export function requestScenePointerLock(): void {
-  if (typeof document === 'undefined') return
-  const canvas = document.querySelector<HTMLCanvasElement>('#scene-root canvas')
-  if (!canvas) return
-  if (document.pointerLockElement !== canvas) {
-    try {
-      const result = canvas.requestPointerLock() as unknown
-      if (result instanceof Promise) {
-        void result.catch(() => {
-          // 浏览器拒绝时忽略，玩家点击画面即可重新锁定
-        })
-      }
-    } catch {
-      // 忽略
-    }
-  }
-}
-
-export function exitScenePointerLock(): void {
-  if (typeof document !== 'undefined' && document.pointerLockElement) {
-    document.exitPointerLock()
-  }
-}
-
 /** 触发下载文本文件（存档导出）。 */
 export function downloadTextFile(filename: string, text: string, mime = 'application/json'): void {
   const blob = new Blob([text], { type: `${mime};charset=utf-8` })
