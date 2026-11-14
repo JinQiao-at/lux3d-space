@@ -13,27 +13,23 @@
 
 ## 1. 运行方式
 
-本机捆绑运行时路径（与 00-brief §2.4 一致）：
-
-- Node：`C:\Users\王潇\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bin\node.exe`
-- pnpm：`C:\Users\王潇\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\pnpm\bin\pnpm.mjs`
+前置：Node ≥ 20、pnpm ≥ 9（任何标准安装均可；完整上手见 [../docs/handoff-runnable.md](../docs/handoff-runnable.md)）。
 
 在本目录（`lux3d-space/demo`）执行：
 
 ```powershell
 # 1) 安装依赖（已有 pnpm-lock.yaml；首次约 1–2 分钟）
-node "C:\Users\王潇\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\pnpm\bin\pnpm.mjs" install
+pnpm install
 
 # 2) 生产构建（tsc --noEmit 严格类型检查 + vite build）
-node "C:\Users\王潇\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\pnpm\bin\pnpm.mjs" build
+pnpm build
 
-# 3) 单元测试（Node 24 内置 test runner + 类型剥离）
-node --experimental-strip-types --test tests/state-machine.test.ts
-#   或（bash / cmd 下通配符展开）：node --experimental-strip-types --test tests/*.test.ts
+# 3) 单元测试（Node 内置 test runner + 类型剥离）
+pnpm test
 
-# 4) 开发服务器（默认 5180）
-node "C:\Users\王潇\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\pnpm\bin\pnpm.mjs" dev --port 5180
-# 浏览器打开 http://127.0.0.1:5180/
+# 4) 开发服务器（Windows 建议固定 6120——5180/5800 可能落入系统保留段）
+pnpm exec vite --port 6120 --strictPort
+# 浏览器打开 http://127.0.0.1:6120/
 
 # 5) UI 截图（需 dev server 已运行；Edge headless + CDP，输出 4 张到 assets/screenshots/）
 node --experimental-strip-types scripts/screenshot.mjs

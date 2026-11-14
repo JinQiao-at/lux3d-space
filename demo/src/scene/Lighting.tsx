@@ -48,6 +48,8 @@ export function ZoneLighting({ zone }: { zone: ZoneId }) {
           <FlickerLight position={[4.1, 0.85, 0.6]} color="#ff9a4d" intensity={2.4} distance={8} seed={1.3} speed={9} />
           <FlickerLight position={[0, 1.35, -2.4]} color="#ffcf8a" intensity={1.1} distance={4.5} seed={2.1} speed={3} />
           <pointLight position={[-2.6, 2.4, -4.6]} color="#5f7bd6" intensity={0.5} distance={9} decay={2} />
+          {/* 任务②档1：暖色 fill——书架/油画暗角填充，提升 GLB 材质可读性 */}
+          <pointLight position={[0, 2.2, 0]} color="#ffe8c8" intensity={0.28} distance={11} decay={1.9} />
         </>
       )}
 
@@ -58,6 +60,8 @@ export function ZoneLighting({ zone }: { zone: ZoneId }) {
             <FlickerLight position={[3.9, 1.4, -2.4]} color="#7fd8ff" intensity={1.2} distance={5} seed={3.7} speed={2.4} />
           )}
           <pointLight position={[-3.0, 2.1, -2.4]} color="#5a7fa0" intensity={lanternLit ? 0.18 : 0.05} distance={6} decay={2} />
+          {/* 任务②档1：冷青 fill——黑暗保持氛围的同时给浮雕/转盘 GLB 一层底光 */}
+          <pointLight position={[0, 0.6, 0]} color="#8fb8cc" intensity={lanternLit ? 0.14 : 0.04} distance={12} decay={2} />
         </>
       )}
 
@@ -67,6 +71,8 @@ export function ZoneLighting({ zone }: { zone: ZoneId }) {
           <FlickerLight position={[2.3, 1.5, -2.5]} color="#ffb066" intensity={1.5} distance={7} seed={1.9} speed={4.8} />
           <pointLight position={[0, 1.6, -1.6]} color="#9fe7ff" intensity={1.8} distance={8} decay={2} />
           <FlickerLight position={[0, 3.2, 0]} color="#7fa0ff" intensity={0.8} distance={9} seed={4.4} speed={1.6} />
+          {/* 任务②档1：中性 fill——挂毯/石台 GLB 细部（织纹/刻痕）可读性 */}
+          <pointLight position={[0, 2.0, 1.2]} color="#d8e4ff" intensity={0.3} distance={9} decay={1.9} />
         </>
       )}
     </>

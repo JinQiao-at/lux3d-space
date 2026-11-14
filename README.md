@@ -126,12 +126,13 @@ cd server
 python -m venv .venv
 # Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --host 127.0.0.1 --port 5182
+# pg 模式（Windows）必须用启动器：python run.py    # 端口 25432
+# mock 模式（零依赖）可直接：uvicorn app.main:app --host 127.0.0.1 --port 25432
 ```
 
 健康检查 `GET /api/health`，交互文档 `/docs`。接 PostgreSQL + pgvector 见 [`server/README.md`](server/README.md)。
 
-> 端口说明：本机 Windows 保留了 8058–8157、8300–8399 等 TCP 段，8765/8790 可能被占；示例统一用 **5182**（可换成任意未被排除的端口）。
+> 端口说明：本机 Windows 动态保留 TCP 段（5041–5763、8058–8157 等），5182/8765/5433 都曾在段内；示例统一 **API=25432 / DB=25433**（可换任意段外端口）。完整上手：[docs/handoff-runnable.md](docs/handoff-runnable.md)。
 
 ## 目录结构
 

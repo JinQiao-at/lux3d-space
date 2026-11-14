@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { useThree } from '@react-three/fiber'
+import * as THREE from 'three'
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { RoomShell } from './RoomShell.tsx'
 import { ZoneProps, HighlightHalo } from './Props.tsx'
 import { ZoneLighting } from './Lighting.tsx'
@@ -12,6 +14,7 @@ import { enableInteractionBVH } from './bvh.ts'
 export function World() {
   const zone = useGameStore((state) => state.game.zone)
   const scene = useThree((state) => state.scene)
+  const gl = useThree((state) => state.gl)
 
   const background = zone === 'zone_study' ? '#0a0806' : zone === 'zone_basement' ? '#030506' : '#06050b'
   const fogNear = zone === 'zone_basement' ? 1.5 : 2.5
@@ -21,6 +24,21 @@ export function World() {
   useEffect(() => {
     if (scene) enableInteractionBVH(scene)
   }, [zone, scene])
+
+  // 任务②档2：PMREM + RoomEnvironment 生成 scene.environment（零 CDN，three 内置合成环境）——
+  // GLB 的 MeshStandardMaterial 有了 IBL 反射，金属/高光面不再死板；一次性生成，全局共享。
+  useEffect(() => {
+    if (!gl || !scene) return
+    const pmrem = new THREE.PMREMGenerator(gl)
+    const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    scene.environment = envTexture
+    scene.environmentIntensity = 0.35 // 压低环境反射强度——保持暗调氛围，只提材质层次
+    pmrem.dispose()
+    return () => {
+      scene.environment = null
+      envTexture.dispose()
+    }
+  }, [gl, scene])
 
   return (
     <>

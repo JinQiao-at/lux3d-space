@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import { Suspense, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import type { Action } from './game/types.ts'
@@ -179,7 +180,13 @@ export default function App() {
         <Canvas
           camera={{ fov: 72, near: 0.05, far: 120, position: [0, EYE_HEIGHT, 3.2] }}
           dpr={[1, 1.75]}
-          gl={{ antialias: true, powerPreference: 'high-performance' }}
+          gl={{
+            antialias: true,
+            powerPreference: 'high-performance',
+            // 任务②档0：ACES Filmic 显式化 + 曝光 1.12——暗部层次提升（提灯暖光/烛火高光不过曝）
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.12,
+          }}
           onCreated={({ gl }) => {
             // P1-A1 开发期性能打点：renderer.info 挂全局，HUD 角标轮询显示（生产不渲染面板但打点保留）
             const info = gl.info as unknown as { render: { calls: number; triangles: number }; memory: { geometries: number; textures: number } }
