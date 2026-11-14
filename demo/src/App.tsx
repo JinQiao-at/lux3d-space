@@ -7,6 +7,7 @@ import { useGameStore } from './game/store.ts'
 import { ensureAudio, setMasterVolume, startRain, stopRain, startDrip, stopDrip, startChamberPad, stopChamberPad } from './game/audio.ts'
 import { World } from './scene/World.tsx'
 import { DarknessOverlay, HUD } from './ui/HUD.tsx'
+import { OpeningOverlayGate } from './ui/OpeningOverlay.tsx'
 import { ClickHint, NarrationLog } from './ui/Overlays.tsx'
 import { TitleScreen } from './ui/TitleScreen.tsx'
 import { JournalPanel } from './ui/JournalPanel.tsx'
@@ -203,6 +204,7 @@ export default function App() {
       {started && <HUD />}
       {started && <NarrationLog />}
       {started && <ClickHint />}
+      <OpeningOverlayGate />
       <DarknessOverlay />
       {started && <FocusCard />}
 
