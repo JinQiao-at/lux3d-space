@@ -38,18 +38,22 @@ export function ZoneLighting({ zone }: { zone: ZoneId }) {
     <>
       <ambientLight intensity={zoneDef.ambient} color={ambientColor} />
       <hemisphereLight
-        intensity={zone === 'zone_study' ? 0.35 : 0.14}
-        color={zone === 'zone_study' ? '#ffe4bb' : '#cdd9ff'}
+        intensity={zone === 'zone_study' ? 0.14 : 0.14}
+        color={zone === 'zone_study' ? '#cdd9ff' : '#cdd9ff'}
         groundColor="#111111"
       />
 
       {zone === 'zone_study' && (
         <>
-          <FlickerLight position={[4.1, 0.85, 0.6]} color="#ff9a4d" intensity={2.4} distance={8} seed={1.3} speed={9} />
+          {/* 任务③：密室配方搬入书房（同构四光），雨夜三参数适配——
+              壁炉暖 Flicker 保留（光源本体）、窗外月光偏冷、fill 暖白压暗 */}
+          <FlickerLight position={[4.1, 0.85, 0.6]} color="#ff9a4d" intensity={1.5} distance={7} seed={1.3} speed={9} />
           <FlickerLight position={[0, 1.35, -2.4]} color="#ffcf8a" intensity={1.1} distance={4.5} seed={2.1} speed={3} />
+          {/* 窗外月光：偏冷蓝、低位氛围（雨夜主光偏冷适配） */}
           <pointLight position={[-2.6, 2.4, -4.6]} color="#5f7bd6" intensity={0.5} distance={9} decay={2} />
-          {/* 任务②档1：暖色 fill——书架/油画暗角填充，提升 GLB 材质可读性 */}
-          <pointLight position={[0, 2.2, 0]} color="#ffe8c8" intensity={0.28} distance={11} decay={1.9} />
+          <FlickerLight position={[0, 3.2, 0]} color="#7fa0ff" intensity={0.8} distance={9} seed={4.4} speed={1.6} />
+          {/* fill 暖白：书架/油画 GLB 细部可读性 */}
+          <pointLight position={[0, 2.0, 1.2]} color="#d8e4ff" intensity={0.3} distance={9} decay={1.9} />
         </>
       )}
 

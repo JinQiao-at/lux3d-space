@@ -23,7 +23,7 @@ const MAT = {
   wallStudyW: std('#443629', 0.9),
   wallStudyE: std('#3f3226', 0.9),
   beam: std('#241a12', 0.95),
-  window: std('#1e2b3f', 0.2, { emissive: '#2c4a72', emissiveIntensity: 0.55 }),
+  window: std('#1e2b3f', 0.2, { emissive: '#2c4a72', emissiveIntensity: 0.9 }),
   sill: std('#2b2118', 0.8),
   base: std('#2b2016', 0.85),
   // 地下室

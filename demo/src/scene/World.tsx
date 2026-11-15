@@ -5,7 +5,6 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { RoomShell } from './RoomShell.tsx'
 import { ZoneProps, HighlightHalo } from './Props.tsx'
 import { ZoneLighting } from './Lighting.tsx'
-import { StudyRoomLighting } from './StudyRoomLighting.tsx'
 import { Player } from './Player.tsx'
 import { CameraRig } from './CameraRig.tsx'
 import { useGameStore } from '../game/store.ts'
@@ -19,7 +18,8 @@ export function World() {
 
   const background = zone === 'zone_study' ? '#0a0806' : zone === 'zone_basement' ? '#030506' : '#06050b'
   const fogNear = zone === 'zone_basement' ? 1.5 : 2.5
-  const fogFar = zone === 'zone_study' ? 24 : zone === 'zone_basement' ? 15 : 18
+  // 任务③：书房雾与密室同构（far 20，比密室 18 略低密度适配雨夜大房间）
+  const fogFar = zone === 'zone_study' ? 20 : zone === 'zone_basement' ? 15 : 18
 
   // T-028 拾取加速：zone 挂载完成后对该场景 mesh 建 BVH（幂等；geometry 缓存共享仅首次有成本）
   useEffect(() => {
@@ -46,7 +46,6 @@ export function World() {
       <color attach="background" args={[background]} />
       <fog attach="fog" args={[background, fogNear, fogFar]} />
       <ZoneLighting zone={zone} />
-      {zone === 'zone_study' && <StudyRoomLighting />}
       <RoomShell zone={zone} />
       <ZoneProps zone={zone} />
       <HighlightHalo />
