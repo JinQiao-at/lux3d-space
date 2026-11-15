@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { ZONES } from '../data/scene.ts'
-import { STAGE_META } from '../data/narrative.ts'
 import { OBJECTS } from '../data/scene.ts'
 import { dialProgressText } from '../game/actions.ts'
 import { isDark, useGameStore } from '../game/store.ts'
@@ -109,13 +108,6 @@ export function HUD() {
               <kbd>Esc</kbd> 暂停
             </span>
           </div>
-        </div>
-      )}
-
-      {/* 沉浸式：目标以细字显示于叙事气泡上方（Context 一致性——目标永远贴着故事文本） */}
-      {exploring && (
-        <div className="objective-line" aria-label="当前目标">
-          {STAGE_META[game.stage].objective}
         </div>
       )}
 
