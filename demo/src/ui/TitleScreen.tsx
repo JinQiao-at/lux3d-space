@@ -1,8 +1,9 @@
 import { TITLE, TITLE_EN } from '../data/narrative.ts'
 import { ensureAudio } from '../game/audio.ts'
 import { useGameStore } from '../game/store.ts'
+import { TOUCH_MODE } from './TouchControls.tsx'
 
-/** 首屏：标题 + 开始探索/继续 + 操作说明。 */
+/** 首屏：标题 + 开始探索/继续 + 操作说明（触屏模式自动切换双端文案）。 */
 export function TitleScreen() {
   const saveExists = useGameStore((state) => state.saveExists)
   const beginNewGame = useGameStore((state) => state.beginNewGame)
@@ -43,22 +44,38 @@ export function TitleScreen() {
         </div>
         <div className="title-controls">
           <h3>操作</h3>
-          <ul>
-            <li>
-              <kbd>WASD</kbd> 移动 · <kbd>鼠标</kbd> 环视 · <kbd>Shift</kbd> 快走
-            </li>
-            <li>
-              <kbd>E</kbd> 调查/交互 · <kbd>L</kbd> 点亮/熄灭提灯
-            </li>
-            <li>
-              <kbd>Tab</kbd> 档案检索 · <kbd>J</kbd> 日记与提示 · <kbd>F</kbd> 叙事 Agent
-            </li>
-            <li>
-              <kbd>Esc</kbd> 暂停 / 设置 / 导出导入存档
-            </li>
-          </ul>
+          {TOUCH_MODE ? (
+            <ul>
+              <li>
+                <kbd>左摇杆</kbd> 上下左右滑动移动（推远 = 快走）
+              </li>
+              <li>
+                <kbd>右半屏滑动</kbd> 环视 · <kbd>交互</kbd> 按钮 调查/交互
+              </li>
+              <li>
+                <kbd>提灯</kbd> 按钮 点亮/熄灭 · <kbd>Esc 键</kbd> 暂停
+              </li>
+            </ul>
+          ) : (
+            <ul>
+              <li>
+                <kbd>WASD</kbd> 移动 · <kbd>鼠标</kbd> 环视 · <kbd>Shift</kbd> 快走
+              </li>
+              <li>
+                <kbd>E</kbd> 调查/交互 · <kbd>L</kbd> 点亮/熄灭提灯
+              </li>
+              <li>
+                <kbd>Tab</kbd> 档案检索 · <kbd>J</kbd> 日记与提示 · <kbd>F</kbd> 叙事 Agent
+              </li>
+              <li>
+                <kbd>Esc</kbd> 暂停 / 设置 / 导出导入存档
+              </li>
+            </ul>
+          )}
           <p className="muted">
-            点击画面开始漫游（光标常显，无需锁定）。所有场景、音效均为程序化生成，不加载任何网络资产。
+            {TOUCH_MODE
+              ? '触屏模式：左下摇杆移动，右半屏滑动环视，按钮交互。所有场景、音效均为程序化生成。'
+              : '点击画面开始漫游（光标常显，无需锁定）。所有场景、音效均为程序化生成，不加载任何网络资产。'}
           </p>
         </div>
       </div>

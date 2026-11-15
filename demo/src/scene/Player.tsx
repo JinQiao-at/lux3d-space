@@ -6,6 +6,7 @@ import { EYE_HEIGHT, ZONES, zoneObjects } from '../data/scene.ts'
 import { findInteractionCandidate, hasMetConditions, resolveMovement } from '../game/interaction.ts'
 import { useGameStore } from '../game/store.ts'
 import { playSound } from '../game/audio.ts'
+import { consumeLookDelta, getTouchMove } from '../ui/TouchControls.tsx'
 
 const WALK_SPEED = 2.15
 const RUN_SPEED = 3.7
@@ -118,6 +119,16 @@ export function Player() {
     const canExplore = state.started && !state.focus && state.panel === 'none'
     if (!canExplore) return
 
+    // T-035 触屏：look 增量（右半屏滑动）与桌面 mousemove 同管道（×灵敏度）
+    const look = consumeLookDelta()
+    if (look.dx || look.dy) {
+      const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ')
+      euler.y -= look.dx * 0.0022 * sensitivity
+      euler.x -= look.dy * 0.0022 * sensitivity
+      euler.x = Math.max(-1.45, Math.min(1.45, euler.x))
+      camera.quaternion.setFromEuler(euler)
+    }
+
     const dt = Math.min(0.05, delta)
     const forward = new THREE.Vector3()
     camera.getWorldDirection(forward)
@@ -131,10 +142,17 @@ export function Player() {
     if (keys.current.KeyS || keys.current.ArrowDown) move.sub(forward)
     if (keys.current.KeyD || keys.current.ArrowRight) move.add(right)
     if (keys.current.KeyA || keys.current.ArrowLeft) move.sub(right)
+    // T-035 触屏摇杆：向量合成进移动（长度>0.15 死区；>0.85 视同 Shift 跑）
+    const stick = getTouchMove()
+    if (stick.active && Math.hypot(stick.x, stick.y) > 0.15) {
+      move.add(forward.clone().multiplyScalar(stick.y))
+      move.add(right.clone().multiplyScalar(stick.x))
+    }
 
     if (move.lengthSq() > 0) {
       move.normalize()
-      const running = Boolean(keys.current.ShiftLeft || keys.current.ShiftRight)
+      const stickRun = stick.active && Math.hypot(stick.x, stick.y) > 0.85
+      const running = Boolean(keys.current.ShiftLeft || keys.current.ShiftRight) || stickRun
       const speed = running ? RUN_SPEED : WALK_SPEED
       const current: Vec3 = [camera.position.x, camera.position.y, camera.position.z]
       const desired: Vec3 = [camera.position.x + move.x * speed * dt, camera.position.y, camera.position.z + move.z * speed * dt]

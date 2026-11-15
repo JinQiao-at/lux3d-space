@@ -2042,3 +2042,56 @@ dt {
 #scene-root canvas {
   cursor: crosshair;
 }
+
+/* T-035 触屏控制层（pointer:coarse 才渲染；桌面不可见） */
+.touch-controls {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  pointer-events: none;
+}
+.touch-stick {
+  position: fixed;
+  left: 28px;
+  bottom: 28px;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  border: 2px solid rgba(230, 214, 180, 0.35);
+  background: rgba(10, 8, 6, 0.4);
+  pointer-events: none;
+}
+.touch-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-radius: 50%;
+  background: rgba(255, 207, 138, 0.5);
+  transition: transform 0.05s linear;
+}
+.touch-actions {
+  position: fixed;
+  right: 24px;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  pointer-events: auto;
+}
+.touch-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(230, 214, 180, 0.5);
+  background: rgba(10, 8, 6, 0.55);
+  color: #e8ddc4;
+  font-size: 16px;
+  font-family: inherit;
+  touch-action: none;
+}
+.touch-btn:active {
+  background: rgba(255, 207, 138, 0.25);
+}

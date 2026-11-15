@@ -9,6 +9,7 @@ import { ensureAudio, setMasterVolume, startRain, stopRain, startDrip, stopDrip,
 import { World } from './scene/World.tsx'
 import { DarknessOverlay, HUD } from './ui/HUD.tsx'
 import { OpeningOverlayGate } from './ui/OpeningOverlay.tsx'
+import { TouchControls } from './ui/TouchControls.tsx'
 import { ClickHint, NarrationLog } from './ui/Overlays.tsx'
 import { TitleScreen } from './ui/TitleScreen.tsx'
 import { JournalPanel } from './ui/JournalPanel.tsx'
@@ -209,6 +210,7 @@ export default function App() {
       {started && <NarrationLog />}
       {started && <ClickHint />}
       <OpeningOverlayGate />
+      <TouchControls />
       <DarknessOverlay />
       {started && <FocusCard />}
 
