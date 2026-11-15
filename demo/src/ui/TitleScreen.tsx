@@ -26,7 +26,10 @@ export function TitleScreen() {
   return (
     <div className="title-overlay">
       <div className="title-content">
-        <p className="title-kicker">LUX3D · 叙事空间垂直切片</p>
+        <p className="title-kicker">
+          LUX3D · 叙事空间垂直切片
+          <span className="title-version">build 2026-11-14 · GLB 17/17</span>
+        </p>
         <h1>{TITLE}</h1>
         <p className="title-en">{TITLE_EN}</p>
         <p className="title-lead">

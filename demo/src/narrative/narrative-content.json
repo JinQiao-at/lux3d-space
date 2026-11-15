@@ -8,7 +8,7 @@
     "descend": { "stage": "descend", "title": "向下去", "objective": "打开书房西侧的地板暗门，进入地下室" },
     "illuminate": { "stage": "illuminate", "title": "提灯之下", "objective": "用提灯照亮淋浴门、石壁浮雕与洗手台" },
     "solve_dials": { "stage": "solve_dials", "title": "三符号机关", "objective": "按浮雕与刻文的提示，依次拨动三个转盘" },
-    "chamber": { "stage": "chamber", "title": "密室", "objective": "穿过暗门，调查密室中央的石台" },
+    "chamber": { "stage": "chamber", "title": "密室", "objective": "调查密室中央的石台" },
     "complete": { "stage": "complete", "title": "终局", "objective": "故事已经结束。你可以继续自由探索，或重新开始。" }
   },
   "openingLines": [

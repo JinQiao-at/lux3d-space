@@ -2095,3 +2095,32 @@ dt {
 .touch-btn:active {
   background: rgba(255, 207, 138, 0.25);
 }
+
+/* T-034 右下状态条：单行紧凑（Context 一致性） */
+.status-bar {
+  flex-direction: row !important;
+  gap: 10px !important;
+  align-items: center !important;
+  background: rgba(10, 8, 6, 0.55);
+  border: 1px solid rgba(230, 214, 180, 0.18);
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+.status-bar .lantern-chip,
+.status-bar .dial-chip,
+.status-bar .hint-chip {
+  font-size: 11px;
+}
+
+/* 版本徽标（Context 一致性：一眼识别页面版本，防旧缓存混淆） */
+.title-version {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 2px 8px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(159, 230, 160, 0.75);
+  border: 1px solid rgba(159, 230, 160, 0.3);
+  border-radius: 3px;
+  vertical-align: middle;
+}

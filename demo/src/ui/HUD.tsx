@@ -130,13 +130,14 @@ export function HUD() {
         </div>
       </div>
 
-      <div className="hud hud-bottom-right">
-        <div className={`lantern-chip ${game.lanternLit ? 'is-lit' : game.flags.has_lantern ? 'is-held' : ''}`}>
+      {/* T-034 Context 一致性：右下状态合并为单行紧凑条（消除三层 chip 堆叠） */}
+      <div className="hud hud-bottom-right status-bar">
+        <span className={`lantern-chip ${game.lanternLit ? 'is-lit' : game.flags.has_lantern ? 'is-held' : ''}`}>
           <span className="lantern-dot" />
-          提灯：{game.lanternLit ? '已点亮' : game.flags.has_lantern ? '未点亮（L）' : '尚未获得'}
-        </div>
-        {game.zone === 'zone_basement' && <div className="dial-chip">转盘序列：{dialText}</div>}
-        <div className="hint-chip">提示次数：{game.hintsUsed}</div>
+          提灯 {game.lanternLit ? '已点亮' : game.flags.has_lantern ? '未点亮' : '未获得'}
+        </span>
+        {game.zone === 'zone_basement' && <span className="dial-chip">转盘 {dialText}</span>}
+        <span className="hint-chip">提示 {game.hintsUsed}</span>
       </div>
 
       {toast && <div className="toast">{toast}</div>}
