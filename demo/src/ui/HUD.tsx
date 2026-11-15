@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ZONES } from '../data/scene.ts'
 import { STAGE_META } from '../data/narrative.ts'
 import { OBJECTS } from '../data/scene.ts'
@@ -29,10 +29,16 @@ export function HUD() {
     return () => clearTimeout(timer)
   }, [toast, clearToast])
 
-  const meta = STAGE_META[game.stage]
   const object = interaction ? OBJECTS[interaction.objectId] : null
   const dialText = dialProgressText(game)
   const exploring = !focus && panel === 'none'
+
+  // 沉浸式呈现：键位表开场后显示 8 秒自动淡出（操作已在开场浮层教过，常驻表是冗余）
+  const [legendVisible, setLegendVisible] = useState(true)
+  useEffect(() => {
+    const timer = setTimeout(() => setLegendVisible(false), 8000)
+    return () => clearTimeout(timer)
+  }, [])
 
   // P1-A1 开发期 GL 性能角标（renderer.info 每秒轮询；生产构建不渲染）
   useEffect(() => {
@@ -53,30 +59,21 @@ export function HUD() {
       <div className="hud-scrim hud-scrim-bottom" aria-hidden="true" />
       {import.meta.env.DEV && <div id="gl-profiler" className="gl-profiler" aria-hidden="true" />}
 
+      {/* 沉浸式 HUD（重做）：左上仅一行地点小字；目标移到底部字幕上方细字；右上四按钮轻量化 */}
       <div className="hud hud-top-left">
         <div className="zone-name">
           {ZONES[game.zone].name} <span className="zone-sub">{ZONES[game.zone].subtitle}</span>
         </div>
-        <div className="objective">
-          <span className="objective-label">目标 · {meta.title}</span>
-          <span className="objective-text">{meta.objective}</span>
-        </div>
       </div>
 
       <div className="hud hud-top-right">
-        <button className="hud-button" onClick={() => openPanel('archive')}>
+        <button className="hud-button" onClick={() => openPanel('archive')} aria-label="档案">
           档案 <kbd>Tab</kbd>
         </button>
-        <button className="hud-button" onClick={() => openPanel('journal')}>
-          日记 <kbd>J</kbd>
-        </button>
-        <button className="hud-button" onClick={() => openPanel('map')}>
-          地图 <kbd>M</kbd>
-        </button>
-        <button className="hud-button" onClick={() => openPanel('agent')}>
+        <button className="hud-button" onClick={() => openPanel('agent')} aria-label="Agent">
           Agent <kbd>F</kbd>
         </button>
-        <button className="hud-button" onClick={() => openPanel('pause')}>
+        <button className="hud-button" onClick={() => openPanel('pause')} aria-label="暂停">
           暂停 <kbd>Esc</kbd>
         </button>
       </div>
@@ -90,45 +87,37 @@ export function HUD() {
         </div>
       )}
 
-      <div className="hud hud-bottom-left">
-        <div className="controls-legend">
-          <span>
-            <kbd>WASD</kbd> 移动
-          </span>
-          <span>
-            <kbd>鼠标</kbd> 环视
-          </span>
-          <span>
-            <kbd>Shift</kbd> 快走
-          </span>
-          <span>
-            <kbd>E</kbd> 交互
-          </span>
-          <span>
-            <kbd>L</kbd> 提灯
-          </span>
-          <span>
-            <kbd>Tab</kbd> 档案
-          </span>
-          <span>
-            <kbd>J</kbd> 日记
-          </span>
-          <span>
-            <kbd>M</kbd> 地图
-          </span>
-          {game.inventory.includes('brass_key') && (
+      {legendVisible && (
+        <div className="hud hud-bottom-left">
+          <div className="controls-legend">
             <span>
-              <kbd>K</kbd> 用钥匙
+              <kbd>WASD</kbd> 移动
             </span>
-          )}
-          <span>
-            <kbd>F</kbd> Agent
-          </span>
-          <span>
-            <kbd>Esc</kbd> 暂停
-          </span>
+            <span>
+              <kbd>鼠标</kbd> 环视
+            </span>
+            <span>
+              <kbd>E</kbd> 交互
+            </span>
+            <span>
+              <kbd>L</kbd> 提灯
+            </span>
+            <span>
+              <kbd>Tab</kbd> 档案
+            </span>
+            <span>
+              <kbd>Esc</kbd> 暂停
+            </span>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* 沉浸式：目标以细字显示于叙事气泡上方（Context 一致性——目标永远贴着故事文本） */}
+      {exploring && (
+        <div className="objective-line" aria-label="当前目标">
+          {STAGE_META[game.stage].objective}
+        </div>
+      )}
 
       {/* T-034 Context 一致性：右下状态合并为单行紧凑条（消除三层 chip 堆叠） */}
       <div className="hud hud-bottom-right status-bar">

@@ -2124,3 +2124,49 @@ dt {
   border-radius: 3px;
   vertical-align: middle;
 }
+
+/* 沉浸式重做：章节转场 + 目标细字 */
+.chapter-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #030302;
+  pointer-events: none;
+}
+.chapter-transition.phase-in {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+.chapter-transition.phase-out {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.chapter-kicker {
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: rgba(230, 214, 180, 0.55);
+}
+.chapter-title {
+  font-size: 24px;
+  letter-spacing: 0.14em;
+  color: #e8ddc4;
+  margin: 0;
+}
+.objective-line {
+  position: fixed;
+  z-index: 11;
+  bottom: calc(12vh + 52px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12.5px;
+  letter-spacing: 0.14em;
+  color: rgba(230, 214, 180, 0.6);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+  white-space: nowrap;
+}
